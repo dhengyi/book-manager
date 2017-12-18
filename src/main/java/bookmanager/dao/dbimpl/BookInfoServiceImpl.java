@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public class BookInfoServiceImpl implements BookInfoService {
-    JdbcOperations jdbcOperations;
+    private JdbcOperations jdbcOperations;
     private final static String INSERT_BOOK_INFO = "INSERT INTO book_info (ugk_name, author, ugk_uid, amount, upload_date, book_picture, describ)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -26,7 +26,7 @@ public class BookInfoServiceImpl implements BookInfoService {
     // 该数据库操作方法还没有实现
     public void save(BookInfoPO bookInfoPO) {
         jdbcOperations.update(INSERT_BOOK_INFO, bookInfoPO.getUgkName(), bookInfoPO.getAuthor(),
-                bookInfoPO.getUgkUid(), bookInfoPO.getAmount(), bookInfoPO.getDescrib());
+                bookInfoPO.getUgkUid(), bookInfoPO.getAmount(), bookInfoPO.getBookPicture(), bookInfoPO.getDescrib());
     }
 
     // 该数据库操作方法还没有实现
