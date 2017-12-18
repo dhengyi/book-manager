@@ -3,7 +3,7 @@ package bookmanager.web.upload;
 import bookmanager.dao.dbservice.BookInfoService;
 import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.vo.bookinfo.UploadBook;
-//import bookmanager.utilclass.COSStorage;
+import bookmanager.utilclass.COSStorage;
 import bookmanager.utilclass.DateToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,13 +29,13 @@ import java.util.UUID;
 @RequestMapping("/bookmanager")
 public class NewBookController {
     private BookInfoService bookInfoService;
-//    private COSStorage cosStorage;
+    private COSStorage cosStorage;
 
-//    @Autowired
-//    public NewBookController(BookInfoService bookInfoService, COSStorage cosStorage) {
-//        this.bookInfoService = bookInfoService;
-//        this.cosStorage = cosStorage;
-//    }
+    @Autowired
+    public NewBookController(BookInfoService bookInfoService, COSStorage cosStorage) {
+        this.bookInfoService = bookInfoService;
+        this.cosStorage = cosStorage;
+    }
 
     /**
      * @param:
@@ -57,7 +57,11 @@ public class NewBookController {
         bookInfoPO.setDescrib(uploadBook.getDescrib());
         String bookPictureName = UUID.randomUUID().toString();
         bookInfoPO.setBookPicture(bookPictureName);
-//            cosStorage.uploadPicture(bookPictureName, bookPicture.getInputStream());
+        try {
+            cosStorage.uploadPicture(bookPictureName, bookPicture.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         bookInfoService.save(bookInfoPO);
 
         return "mybook";
