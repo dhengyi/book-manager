@@ -1,0 +1,149 @@
+#index1_input {
+    display: inline-block;
+    width: 52%;
+}
+
+#index1_input input {
+    padding: 6px 12px;
+    width: 35%;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: width 0.25s ease-in-out;
+    -webkit-transition: width 0.25s ease-in-out;
+    margin-left: 50px;
+    border: 1px solid #ccc;
+    color: #555;
+}
+
+#index1_input a {
+    margin: 0 10px;
+    padding: 6px 12px;
+    transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    color: #444;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#index1_input a i {
+    margin-right: 3px;
+}
+
+#index1_input a:hover {
+    background-color: #ddd;
+    text-decoration: none;
+    color: #111;
+}
+
+#index1_input button {
+    display: inline;
+    background-color: #009a61;
+    color: white;
+    text-decoration: none;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    margin-right: 20px;
+    padding: 6px 12px;
+    margin-left: -4px;
+}
+
+#index1_input button:hover {
+    background-color: #006741;
+}
+
+#index1_sign {
+    font-size: 16px;
+    color: #444;
+}
+
+#index1_sign:hover {
+    text-decoration: none;
+    color: #009a61;
+    font-weight: 500;
+}
+
+#main {
+    width: 85%;
+}
+
+
+/* 左侧 */
+
+#left1 img {
+    width: 120px;
+    height: 150px;
+}
+
+#left1 .rows {
+    background-color: #f3f3f3;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    opacity: 0.8;
+    border-left: 5px solid transparent;
+}
+
+#left1 .rows:hover {
+    border-left-color: #009a61;
+}
+
+#left1 {
+    padding-left: 0;
+    padding-right: 20px;
+}
+
+.index1_info {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+
+/* 右侧 */
+
+#right1 {
+    padding: 15px;
+    background-color: #f3f3f3;
+    opacity: 0.8;
+}
+
+#right1 p {
+    margin-bottom: 5px;
+}
+
+#right1 hr {
+    margin-bottom: 5px;
+    margin-top: 0px;
+    border-top-color: #009688;
+}
+
+.index1_date {
+    color: #01aaed;
+}
+
+.index1_con {
+    color: #333;
+    text-indent: 2em;
+}
+
+#right1 #index_pingination ul {
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width:1024px) {
+    #index1_input {
+        display: block;
+        width: 85%;
+    }
+    #index1_sign {
+        position: absolute;
+        right: 5%;
+        top: 10%;
+    }
+}
+
+@media screen and (max-width:425px) {
+    #index1_input a {
+        display: block;
+    }
+    #index1_input input:focus {
+        width: 65%;
+    }
+}

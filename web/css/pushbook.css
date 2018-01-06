@@ -1,0 +1,95 @@
+#index1_input a:nth-of-type(2) {
+    background-color: #ddd;
+    color: #444;
+}
+
+#main {
+    width: 60%;
+    opacity: .85;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+#main .head {
+    margin-bottom: 0;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#main hr {
+    margin-top: 5px;
+    border-top: 1px solid #ccc;
+}
+
+#choose {
+    margin-top: 50px;
+}
+
+#choose div:nth-of-type(1) {
+    text-align: right;
+}
+
+#choose div:nth-of-type(2) p {
+    text-align: center;
+    font-size: 13px;
+}
+
+#main .con div:nth-of-type(1) {
+    text-align: right;
+    padding-right: 0px;
+    font-size: 14px;
+    line-height: 30px;
+}
+
+#main .con div:nth-of-type(2) {
+    text-align: left;
+    padding-left: 0px;
+}
+
+#main .con input {
+    width: 80%;
+    background-color: white;
+    padding: 0 10px;
+    border: 1px solid #777;
+    height: 30px;
+    outline: none;
+}
+
+#main .con {
+    margin: 30px auto;
+}
+
+#main .con textarea {
+    outline: none;
+    border: 1px solid #777;
+}
+
+#main .con select {
+    width: 30%;
+    height: 28px;
+    margin: 10px 0;
+}
+
+#main .con ul {
+    display: inline-block;
+    margin-left: 30px;
+    width: 60%;
+    margin-top: 20px;
+}
+
+#main .con ul li {
+    text-decoration: none;
+    display: inline-block;
+    background-color: rgba(1, 126, 102, 0.18);
+    color: #017E66;
+    padding: 0px 6px;
+    margin-right: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#main form>p {
+    text-align: right;
+    padding-right: 50px;
+}
