@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServlet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,19 +24,11 @@ import java.util.Map;
  * @Description:
  */
 @Controller
-@RequestMapping("/bookmanager")
 public class LabelTreeController {
-    private BookLabelService bookLabelRepository;
-    private UserService csUserRepository;
-
     @Autowired
-    public LabelTreeController(BookLabelService bookLabelRepository,
-                               UserService UserRepository) {
-        this.bookLabelRepository = bookLabelRepository;
-        this.csUserRepository = UserRepository;
-    }
+    private BookLabelService bookLabelRepository;
 
-    @RequestMapping(value = "/label", method = RequestMethod.GET)
+    @RequestMapping(value = "/tags", method = RequestMethod.GET)
     public String showLabel(Model model) {
         List<BookLabelPO> parentLabels = bookLabelRepository.getParentLabelsByParentId(0);
         List<BookLabelPO> childrenLabels = bookLabelRepository.getChildrenLabelsNyByParentId(0);
@@ -55,30 +48,6 @@ public class LabelTreeController {
         // 将存储父子标签的Map对象添加进model对象
         model.addAttribute("labelsName", labelsName);
 
-        return "label";
-    }
-
-    /**
-     * @param:
-     * @return:
-     * @Description: 添加标签功能所对应的控制器
-     */
-    @RequestMapping(value = "/label", method = RequestMethod.POST)
-    public String addLabel(AddLabelVO addLabel) {
-        int uid = addLabel.getUid();
-        int privilege = csUserRepository.getPrivilegeByUid(uid);
-
-        // 只有管理者才能添加标签
-        if (privilege == 1) {
-            String parentLabelName = addLabel.getParentName();
-            String childLabelName = addLabel.getChildName();
-            int parentLabelId = bookLabelRepository.getParentLabelIdByParentLabelName(parentLabelName);
-            BookLabelPO label = new BookLabelPO(childLabelName, parentLabelId);
-            bookLabelRepository.insertNewLabel(label);
-        } else {
-            // 提示用户无添加标签的权限
-        }
-
-        return "label";
+        return "alltags";
     }
 }

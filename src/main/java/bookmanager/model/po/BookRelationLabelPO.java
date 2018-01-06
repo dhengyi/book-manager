@@ -12,8 +12,7 @@ public class BookRelationLabelPO {
 
     public BookRelationLabelPO() { }
 
-    public BookRelationLabelPO(int pkId, int bookInfoPkId, int bookLabelPkId) {
-        this.pkId = pkId;
+    public BookRelationLabelPO(int bookInfoPkId, int bookLabelPkId) {
         this.bookInfoPkId = bookInfoPkId;
         this.bookLabelPkId = bookLabelPkId;
     }

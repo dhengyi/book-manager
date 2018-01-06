@@ -5,6 +5,7 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +16,10 @@ import java.io.InputStream;
  * @Modified By:
  * @Description: 将图片保存在对象存储上
  */
-@Component
+@Component("cosStorage")
 public class COSStorage {
     private COSClient cosClient;
+    private String bucketName = "bookmanager-1253675585";
 
     @Autowired
     public COSStorage(COSClient cosClient) {
@@ -30,15 +32,25 @@ public class COSStorage {
         objectMetadata.setContentLength(500);
         // 设置 Content type, 默认是 application/octet-stream
         objectMetadata.setContentType("image/jpeg, image/png, image/gif");
-        PutObjectResult putObjectResult = cosClient.putObject("bookmanager-1253675585",
+        System.out.println(inputStream.toString());
+        PutObjectResult putObjectResult = cosClient.putObject(bucketName,
                 bookPictureName, inputStream, objectMetadata);
 
         // 关闭流
         try {
             inputStream.close();
-            cosClient.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // 删除指定图片
+    public void deleteBookPicture(String bookPictureName) {
+        cosClient.deleteObject(bucketName, bookPictureName);
+    }
+
+    // 关闭客户端
+    public void shutdownClient() {
+        cosClient.shutdown();
     }
 }

@@ -1,6 +1,7 @@
 package bookmanager.dao.dbimpl;
 
 import bookmanager.dao.dbservice.BookLabelService;
+import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.BookLabelPO;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,9 +23,9 @@ public class BookLabelServiceImpl implements BookLabelService {
             "WHERE parent_id = ?";
     private final static String QUERY_CHILDREN_LABELS_BY_PARENT_ID = "SELECT * FROM book_label " +
             "WHERE parent_id <> ?";
-    private final static String QUERY_CHILDREN_PKID_BY_PARENT_NAME = "SELECT pk_id FROM book_label" +
+    private final static String QUERY_PK_ID_BY_NAME = "SELECT pk_id FROM book_label " +
             "WHERE name = ?";
-    private final static String INSERT_NEW_LABEL = "INSERT INTO book_label (name, parent_id)" +
+    private final static String INSERT_NEW_LABEL = "INSERT INTO book_label (name, parent_id) " +
             "VALUES (?, ?)";
 
     @Inject
@@ -45,8 +46,8 @@ public class BookLabelServiceImpl implements BookLabelService {
     }
 
     @Override
-    public int getParentLabelIdByParentLabelName(String parentLabelName) {
-        return  jdbcOperations.queryForObject(QUERY_CHILDREN_PKID_BY_PARENT_NAME,
+    public int getPkIdByName(String parentLabelName) {
+        return  jdbcOperations.queryForObject(QUERY_PK_ID_BY_NAME,
                 int.class, parentLabelName);
     }
 

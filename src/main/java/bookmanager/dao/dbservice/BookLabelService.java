@@ -15,5 +15,5 @@ public interface BookLabelService {
 
     void insertNewLabel(BookLabelPO label);
 
-    int getParentLabelIdByParentLabelName(String parentLabelName);
+    int getPkIdByName(String name);
 }

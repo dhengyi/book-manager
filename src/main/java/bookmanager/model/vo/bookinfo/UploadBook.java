@@ -1,6 +1,8 @@
 package bookmanager.model.vo.bookinfo;
 
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -11,17 +13,21 @@ import javax.validation.constraints.Size;
  * @Description:
  */
 public class UploadBook {
-    @NotNull
-    @Size(min=1, max=20, message="{name.size}")
+    @NotNull(message = "请填写书名")
+    @Size(max=30, message="{name.size}")
     private String name;                // 书名
 
-    @Size(max=20, message="{author.size}")
     private String author;              // 作者
 
-    @NotNull
-    private int amount;                 // 数量
+    @NotNull(message = "请填写要捐赠的数量")
+    @Min(value = 1, message = "至少要捐赠1本书哦")
+    @Max(value = 5, message = "不需要捐赠这么多的同类书籍哦")
+    private int amount;              // 数量
 
-    @Size(max=200, message="{name.size}")
+    @NotNull(message = "请选择图书的分类")
+    private String types;               // 分类
+
+    @Size(max=200, message="{describ.size}")
     private String describ;             // 书籍描述
 
     public String getName() {
@@ -46,6 +52,14 @@ public class UploadBook {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getTypes() {
+        return types;
+    }
+
+    public void setTypes(String types) {
+        this.types = types;
     }
 
     public String getDescrib() {

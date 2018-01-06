@@ -18,13 +18,14 @@ public class BookInfoPO {
 
     public BookInfoPO() { }
 
-    public BookInfoPO(int pkId, String ugkName, String author, int ugkUid, int amount, String uploadDate, String describ) {
+    public BookInfoPO(int pkId, String ugkName, String author, int ugkUid, int amount, String uploadDate, String bookPicture, String describ) {
         this.pkId = pkId;
         this.ugkName = ugkName;
         this.author = author;
         this.ugkUid = ugkUid;
         this.amount = amount;
         this.uploadDate = uploadDate;
+        this.bookPicture = bookPicture;
         this.describ = describ;
     }
 
