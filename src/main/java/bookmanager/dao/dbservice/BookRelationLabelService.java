@@ -15,4 +15,6 @@ public interface BookRelationLabelService {
 
     // 在某标签下添加一本书籍信息
     void save(BookRelationLabelPO bookRelationLabel);
+
+    int getBookCountUnderLabel(int labelId);
 }

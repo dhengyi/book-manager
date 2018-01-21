@@ -31,15 +31,15 @@ public class LabelTreeController {
     @RequestMapping(value = "/tags", method = RequestMethod.GET)
     public String showLabel(Model model) {
         List<BookLabelPO> parentLabels = bookLabelRepository.getParentLabelsByParentId(0);
-        List<BookLabelPO> childrenLabels = bookLabelRepository.getChildrenLabelsNyByParentId(0);
-        Map<String, List<String>> labelsName = new HashMap<String, List<String>>();
+        List<BookLabelPO> childrenLabels = bookLabelRepository.getChildrenLabelsByParentId(0);
+        Map<String, Map<Integer, String>> labelsName = new HashMap<String, Map<Integer, String>>();
 
         // 时间复杂度高
         for (BookLabelPO parentLabel : parentLabels) {
-            List<String> childLabelsName = new ArrayList<String>();
+            Map<Integer, String> childLabelsName = new HashMap<Integer, String>();
             for (BookLabelPO childrenLabel : childrenLabels) {
                 if (parentLabel.getPkId() == childrenLabel.getParentId()) {
-                    childLabelsName.add(childrenLabel.getName());
+                    childLabelsName.put(childrenLabel.getPkId(), childrenLabel.getName());
                 }
             }
             labelsName.put(parentLabel.getName(), childLabelsName);

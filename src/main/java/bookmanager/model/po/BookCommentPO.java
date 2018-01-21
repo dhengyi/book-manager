@@ -1,25 +1,39 @@
 package bookmanager.model.po;
 
 
+import bookmanager.annotation.Column;
+import bookmanager.annotation.Table;
+
 /**
  * Created by dela on 11/22/17.
  */
 
 // 评论表
+@Table(name = "book_comment")
 public class BookCommentPO {
-    private int pkId;                   // 无意义主键
-    private int bookInfoPkId;           // 书籍信息表的主键id
-    private int userId;                 // 用户表id
-    private String content;             // 评论
-    private String commentDateTime;     // 评论时间
+    @Column(name = "pk_id")
+    private int pkId;                       //无意义主键
+
+    @Column(name = "book_info_pk_id")
+    private int bookInfoPkId;               //书籍信息表的主键id
+
+    @Column(name = "cs_user_id")
+    private int csUserId;                   //用户表id
+
+    @Column(name = "content")
+    private String content;                 //评论
+
+    @Column(name = "comment_datetime")
+    private String commentDatetime;         //评论时间
 
     public BookCommentPO() { }
 
-    public BookCommentPO(int bookInfoPkId, int userId, String content, String commentDateTime) {
+    public BookCommentPO(int bookInfoPkId, int csUserId, String content,
+                         String commentDatetime) {
         this.bookInfoPkId = bookInfoPkId;
-        this.userId = userId;
+        this.csUserId = csUserId;
         this.content = content;
-        this.commentDateTime = commentDateTime;
+        this.commentDatetime = commentDatetime;
     }
 
     public int getPkId() {
@@ -38,12 +52,12 @@ public class BookCommentPO {
         this.bookInfoPkId = bookInfoPkId;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getCsUserId() {
+        return csUserId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCsUserId(int csUserId) {
+        this.csUserId = csUserId;
     }
 
     public String getContent() {
@@ -54,11 +68,11 @@ public class BookCommentPO {
         this.content = content;
     }
 
-    public String getCommentDateTime() {
-        return commentDateTime;
+    public String getCommentDatetime() {
+        return commentDatetime;
     }
 
-    public void setCommentDateTime(String commentDateTime) {
-        this.commentDateTime = commentDateTime;
+    public void setCommentDatetime(String commentDatetime) {
+        this.commentDatetime = commentDatetime;
     }
 }

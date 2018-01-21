@@ -1,4 +1,4 @@
-package bookmanager.utilclass;
+package bookmanager.dao.rowmapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -131,6 +131,7 @@ public class JdbcRowMapper<T> implements RowMapper {
                 // TODO 这里的代码的顺序是否正确有待测试
                 // 将<属性名字, 属性>对加入map中
                 this.mappedFileds.put(lowerCaseName(name), propertyDescriptor);
+
                 String underscoredName = underscoreName(name);
                 if (!lowerCaseName(name).equals(underscoredName)) {
                     this.mappedFileds.put(underscoredName, propertyDescriptor);
@@ -187,7 +188,9 @@ public class JdbcRowMapper<T> implements RowMapper {
 
         for (int index = 1; index <= columnCount; index++) {
             String column = JdbcUtils.lookupColumnName(resultSetMetaData, index);
+            // 数据库的字段名
             String field = lowerCaseName(column.replaceAll(" ", ""));
+            // 根据数据库字段名拿到属性方法的描述
             PropertyDescriptor propertyDescriptor = this.mappedFileds.get(field);
             if (propertyDescriptor != null) {
                 try {

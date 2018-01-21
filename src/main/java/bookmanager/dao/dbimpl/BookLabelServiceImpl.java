@@ -1,6 +1,7 @@
 package bookmanager.dao.dbimpl;
 
 import bookmanager.dao.dbservice.BookLabelService;
+import bookmanager.dao.rowmapper.JdbcRowMapper;
 import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.BookLabelPO;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -19,6 +20,8 @@ import java.util.List;
 @Repository
 public class BookLabelServiceImpl implements BookLabelService {
     JdbcOperations jdbcOperations;
+    public static volatile List<BookLabelPO> bookLabeList = null;
+
     private final static String QUERY_PARENT_LABELS_BY_PARENT_ID = "SELECT * FROM book_label " +
             "WHERE parent_id = ?";
     private final static String QUERY_CHILDREN_LABELS_BY_PARENT_ID = "SELECT * FROM book_label " +
@@ -27,6 +30,8 @@ public class BookLabelServiceImpl implements BookLabelService {
             "WHERE name = ?";
     private final static String INSERT_NEW_LABEL = "INSERT INTO book_label (name, parent_id) " +
             "VALUES (?, ?)";
+    private static final String GET_BOOKLABEL_BY_ID = "SELECT * FROM book_label where parent_id = ?";
+    private static final String GET_NAME_BY_PKID = "SELECT name FROM book_label WHERE pk_id = ?";
 
     @Inject
     public BookLabelServiceImpl(JdbcOperations jdbcOperations) {
@@ -40,7 +45,7 @@ public class BookLabelServiceImpl implements BookLabelService {
     }
 
     @Override
-    public List<BookLabelPO> getChildrenLabelsNyByParentId(int parentId) {
+    public List<BookLabelPO> getChildrenLabelsByParentId(int parentId) {
         return jdbcOperations.query(QUERY_CHILDREN_LABELS_BY_PARENT_ID,
                 new LabelRowMapper(), parentId);
     }
@@ -54,6 +59,16 @@ public class BookLabelServiceImpl implements BookLabelService {
     @Override
     public void insertNewLabel(BookLabelPO label) {
         jdbcOperations.update(INSERT_NEW_LABEL, label.getName(), label.getParentId());
+    }
+
+    public List<BookLabelPO> getBookLabelById(int id) {
+        bookLabeList = jdbcOperations.query(GET_BOOKLABEL_BY_ID, JdbcRowMapper.newInstance(BookLabelPO.class), id);
+        return bookLabeList;
+    }
+
+    @Override
+    public String getNameByPkId(int labelId) {
+        return jdbcOperations.queryForObject(GET_NAME_BY_PKID, String.class, labelId);
     }
 
     private final static class LabelRowMapper implements RowMapper<BookLabelPO> {

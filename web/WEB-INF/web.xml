@@ -8,6 +8,16 @@
         <param-value>/WEB-INF/applicationContext.xml</param-value>
     </context-param>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/view/404.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/view/500.html</location>
+    </error-page>
+
     <!--<filter>-->
         <!--<filter-name>loginFilter</filter-name>-->
         <!--<filter-class>bookmanager.filter.LoginFilter</filter-class>-->

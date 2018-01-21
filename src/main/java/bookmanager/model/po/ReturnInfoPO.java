@@ -1,23 +1,34 @@
 package bookmanager.model.po;
 
 
+import bookmanager.annotation.Column;
+import bookmanager.annotation.Table;
+
 /**
  * Created by dela on 11/22/17.
  */
 
 //归还时间表
+@Table(name = "return_info")
 public class ReturnInfoPO {
-    private int pkId;                   // 无意义主键
-    private int bookInfoPkId;           // bookInfo这张表里面的主键
-    private int userId;                 // 用户表里的id
-    private String returnDate;          // 归还日期
+    @Column(name = "pk_id")
+    private int pkId;                           //无意义主键
+
+    @Column(name = "book_info_pk_id")
+    private int bookInfoPkId;                   //bookInfo这张表里面的主键
+
+    @Column(name = "cs_user_id")
+    private int csUserId;                       //用户表里的id
+
+    @Column(name = "return_date")
+    private String returnDate;                  //归还日期
 
     public ReturnInfoPO() { }
 
-    public ReturnInfoPO(int pkId, int bookInfoPkId, int userId, String returnDate) {
+    public ReturnInfoPO(int pkId, int bookInfoPkId, int csUserId, String returnDate) {
         this.pkId = pkId;
         this.bookInfoPkId = bookInfoPkId;
-        this.userId = userId;
+        this.csUserId = csUserId;
         this.returnDate = returnDate;
     }
 
@@ -37,12 +48,12 @@ public class ReturnInfoPO {
         this.bookInfoPkId = bookInfoPkId;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getCsUserId() {
+        return csUserId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCsUserId(int csUserId) {
+        this.csUserId = csUserId;
     }
 
     public String getReturnDate() {

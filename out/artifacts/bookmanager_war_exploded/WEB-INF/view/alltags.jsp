@@ -53,8 +53,8 @@
                         <p><c:out value="${labelGroup.getKey()}"/></p>
                         <hr>
                         <ul>
-                            <c:forEach items="${labelGroup.getValue()}" var="childLabel">
-                                <li><a href="/bookmanager/label?type=<c:out value="${childLabel}"/>"><c:out value="${childLabel}"/></a>
+                            <c:forEach items="${labelGroup.getValue().entrySet()}" var="childLabel">
+                                <li><a href="/label?type=<c:out value="${childLabel.getKey()}"/>"><c:out value="${childLabel.getValue()}"/></a>
                                 </li>
                             </c:forEach>
                         </ul>

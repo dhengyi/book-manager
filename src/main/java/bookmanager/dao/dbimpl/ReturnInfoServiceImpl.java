@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * Created by dela on 11/23/17.
@@ -16,18 +17,26 @@ import java.sql.SQLException;
 
 @Repository
 public class ReturnInfoServiceImpl implements ReturnInfoService {
-    private JdbcOperations jdbc;
+    private JdbcOperations jdbcOperations;
 
+    private final static String DELETE_BOOK_BY_USERANDPK_ID = "DELETE FROM borrow_info WHERE cs_user_uid = ? AND book_info_pk_id = ?";
+    private final static String RETURN_BOOK_BY_USERANDPK_ID = "INSERT INTO return_info(book_info_pk_id,cs_user_uid,return_date) VALUES(?,?,?)";
     private final static String SAVE = "INSERT INTO return_info(book_info_pk_id, cs_user_uid, return_date) VALUES(?, ?, ?)";
-
 
     @Autowired
     public ReturnInfoServiceImpl(JdbcOperations jdbc) {
-        this.jdbc = jdbc;
+        this.jdbcOperations = jdbc;
     }
 
+    @Override
     public void save(ReturnInfoPO returnInfo) {
-        jdbc.update(SAVE, returnInfo.getBookInfoPkId(), returnInfo.getUserId(), returnInfo.getReturnDate());
+        jdbcOperations.update(SAVE, returnInfo.getBookInfoPkId(), returnInfo.getCsUserId(), returnInfo.getReturnDate());
+    }
+
+    @Override
+    public void returnBookByUserAndPkId(ReturnInfoPO returnInfoPO) {
+        jdbcOperations.update(DELETE_BOOK_BY_USERANDPK_ID, returnInfoPO.getCsUserId(), returnInfoPO.getBookInfoPkId());
+        jdbcOperations.update(RETURN_BOOK_BY_USERANDPK_ID, returnInfoPO.getBookInfoPkId(), returnInfoPO.getCsUserId(), new Date());
     }
 
     private final static class ReturnInfoRowMapper implements RowMapper<ReturnInfoPO> {

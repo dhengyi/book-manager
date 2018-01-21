@@ -54,7 +54,7 @@ public class NewBookController extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher(request.getContextPath() + "/view/pushbook.jsp").forward(request, response);
+        request.getRequestDispatcher(request.getContextPath() + "/WEB-INF/view/pushbook.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -76,10 +76,11 @@ public class NewBookController extends HttpServlet {
 
         // 处理图片
         if ((bookPicture = request.getPart("bookPicture")).getSize() != 0) {
-            bookPictureName = UUID.randomUUID().toString();
+            String uuid = UUID.randomUUID().toString();
+            bookPictureName = "http://bookmanager-1253675585.coscd.myqcloud.com/" + uuid;
 
             try {
-                cosStorage.uploadPicture(bookPictureName, bookPicture.getInputStream());
+                cosStorage.uploadPicture(uuid, bookPicture.getInputStream(), bookPicture.getSize());
             } catch (IOException e) {
                 System.out.println("cos上传图片出错");
                 e.printStackTrace();

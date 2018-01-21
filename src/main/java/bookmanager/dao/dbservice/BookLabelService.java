@@ -11,9 +11,13 @@ public interface BookLabelService {
 
     List<BookLabelPO> getParentLabelsByParentId(int parentId);
 
-    List<BookLabelPO> getChildrenLabelsNyByParentId(int parentId);
+    List<BookLabelPO> getChildrenLabelsByParentId(int parentId);
 
     void insertNewLabel(BookLabelPO label);
 
     int getPkIdByName(String name);
+
+    List<BookLabelPO> getBookLabelById(int id);
+
+    String getNameByPkId(int labelId);
 }

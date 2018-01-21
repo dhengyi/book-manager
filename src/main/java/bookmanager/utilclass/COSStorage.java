@@ -26,13 +26,12 @@ public class COSStorage {
         this.cosClient = cosClient;
     }
 
-    public void uploadPicture(String bookPictureName, InputStream inputStream) {
+    public void uploadPicture(String bookPictureName, InputStream inputStream, long length) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        // 设置输入流长度为 500
-        objectMetadata.setContentLength(500);
+        // 设置输入流长度为 10M
+        objectMetadata.setContentLength(length);
         // 设置 Content type, 默认是 application/octet-stream
-        objectMetadata.setContentType("image/jpeg, image/png, image/gif");
-        System.out.println(inputStream.toString());
+        objectMetadata.setContentType("image/jpeg, image/png, image/gif, image/jpg");
         PutObjectResult putObjectResult = cosClient.putObject(bucketName,
                 bookPictureName, inputStream, objectMetadata);
 
