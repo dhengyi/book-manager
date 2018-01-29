@@ -40,4 +40,13 @@ public class BookRelationLabelPO {
     public void setBookLabelPkId(int bookLabelPkId) {
         this.bookLabelPkId = bookLabelPkId;
     }
+
+    @Override
+    public String toString() {
+        return "BookRelationLabelPO{" +
+                "pkId=" + pkId +
+                ", bookInfoPkId=" + bookInfoPkId +
+                ", bookLabelPkId=" + bookLabelPkId +
+                '}';
+    }
 }

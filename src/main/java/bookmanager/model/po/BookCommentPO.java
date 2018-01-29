@@ -10,7 +10,7 @@ import bookmanager.annotation.Table;
 
 // 评论表
 @Table(name = "book_comment")
-public class BookCommentPO {
+public class BookCommentPO implements Comparable<BookCommentPO> {
     @Column(name = "pk_id")
     private int pkId;                       //无意义主键
 
@@ -26,7 +26,8 @@ public class BookCommentPO {
     @Column(name = "comment_datetime")
     private String commentDatetime;         //评论时间
 
-    public BookCommentPO() { }
+    public BookCommentPO() {
+    }
 
     public BookCommentPO(int bookInfoPkId, int csUserId, String content,
                          String commentDatetime) {
@@ -69,10 +70,26 @@ public class BookCommentPO {
     }
 
     public String getCommentDatetime() {
-        return commentDatetime;
+        return commentDatetime.substring(0, 19);
     }
 
     public void setCommentDatetime(String commentDatetime) {
         this.commentDatetime = commentDatetime;
+    }
+
+    @Override
+    public int compareTo(BookCommentPO o) {
+        return getPkId() < o.getPkId() ? 1 : -1;
+    }
+
+    @Override
+    public String toString() {
+        return "BookCommentPO{" +
+                "pkId=" + pkId +
+                ", bookInfoPkId=" + bookInfoPkId +
+                ", csUserId=" + csUserId +
+                ", content='" + content + '\'' +
+                ", commentDatetime='" + commentDatetime + '\'' +
+                '}';
     }
 }

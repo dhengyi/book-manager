@@ -12,22 +12,26 @@ import javax.validation.constraints.Size;
 
 @Table(name = "cs_user")
 public class UserLoginVO {
-
     @Column(name = "uid")
     private int uid;
 
     @Column(name = "name")
     @NotNull
-    @Size(min=6, max=16)
+    @Size(min=1, max=16)
     private String name;
 
     @Column(name = "password")
     @NotNull
-    @Size(min=6, max=16)
+    @Size(min=1, max=16)
     private String password;
 
     public UserLoginVO() {
 
+    }
+
+    public UserLoginVO(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
     public UserLoginVO(int uid, String name, String password) {

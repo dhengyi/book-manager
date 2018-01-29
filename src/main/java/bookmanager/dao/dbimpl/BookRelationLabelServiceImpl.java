@@ -19,12 +19,16 @@ import java.util.List;
 @Repository
 public class BookRelationLabelServiceImpl implements BookRelationLabelService {
     private JdbcOperations jdbcOperations;
+
     private final static String INSERT_NEW_BOOK_RELATION_LABEL = "INSERT INTO book_relation_label (book_info_pk_id, book_label_pk_id) " +
             "VALUES (?, ?)";
     private final static String QUERY_BOOKID_BY_LABELID = "SELECT book_info_pk_id FROM book_relation_label WHERE label_tree_pk_id = ? " +
             "ORDER BY book_info_pk_id DESC LIMIT ?, ?";
+
     private final static String QUERY_BOOKCOUNT_UNDER_LABEL_BY_LABELID = "SELECT COUNT(book_info_pk_id) " +
             "FROM book_relation_label WHERE book_label_pk_id = ?";
+
+    private final static String UPDATE_BOOKLABEL_BY_BOOKID = "UPDATE book_relation_label SET book_label_pk_id = ? WHERE book_info_pk_id = ?";
 
     @Inject
     public BookRelationLabelServiceImpl(JdbcOperations jdbcOperations) {
@@ -46,6 +50,11 @@ public class BookRelationLabelServiceImpl implements BookRelationLabelService {
     @Override
     public int getBookCountUnderLabel(int labelId) {
         return jdbcOperations.queryForObject(QUERY_BOOKCOUNT_UNDER_LABEL_BY_LABELID, int.class, labelId);
+    }
+
+    @Override
+    public void updateByBookId(BookRelationLabelPO bookRelationLabelPO) {
+        jdbcOperations.update(UPDATE_BOOKLABEL_BY_BOOKID, bookRelationLabelPO.getBookLabelPkId(), bookRelationLabelPO.getBookInfoPkId());
     }
 
     private final static class BookIdRowMapper implements RowMapper<Integer> {

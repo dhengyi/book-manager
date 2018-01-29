@@ -63,4 +63,14 @@ public class ReturnInfoPO {
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
     }
+
+    @Override
+    public String toString() {
+        return "ReturnInfoPO{" +
+                "pkId=" + pkId +
+                ", bookInfoPkId=" + bookInfoPkId +
+                ", csUserId=" + csUserId +
+                ", returnDate='" + returnDate + '\'' +
+                '}';
+    }
 }

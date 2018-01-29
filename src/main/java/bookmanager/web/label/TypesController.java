@@ -2,7 +2,6 @@ package bookmanager.web.label;
 
 import bookmanager.dao.dbservice.BookInfoService;
 import bookmanager.dao.dbservice.BookLabelService;
-import bookmanager.dao.dbservice.BookRelationLabelService;
 import bookmanager.dao.dbservice.UserService;
 import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.PagePO;
@@ -24,6 +23,7 @@ import java.util.Map;
  * @Description:
  */
 @Controller
+@RequestMapping("/auth")
 public class TypesController {
     private BookInfoService bookInfoService;
     private UserService userService;
@@ -36,24 +36,24 @@ public class TypesController {
         this.bookLabelService = bookLabelService;
     }
 
-    @RequestMapping(value = "/label", method = RequestMethod.GET)
-    public String showTypes(@RequestParam(value = "type") String labelIdPre,
+    @RequestMapping(value = "/types", method = RequestMethod.GET)
+    public String showTypes(@RequestParam(value = "tag") String labelIdPre,
                           @RequestParam(value = "page", required = false) String pageNowPre,
                           Model model) {
-        int labelId, pageNow;
-        List<BookInfoPO> bookInfoPOS = null;
+        int labelId, currentPage;
+        List<BookInfoPO> bookInfoPOS ;
 
         if (pageNowPre == null) {
             pageNowPre = "1";
         }
 
-        pageNow = Integer.parseInt(pageNowPre);
+        currentPage = Integer.parseInt(pageNowPre);
         labelId = Integer.parseInt(labelIdPre);
-        PagePO pagePO = new PagePO(pageNow);
+        PagePO pagePO = new PagePO(currentPage);
 
         String labelName = bookLabelService.getNameByPkId(labelId);
-        bookInfoPOS = bookInfoService.getBookByLabelAndPage(pagePO, labelId);
-        int bookCount = bookInfoService.getBookCountByLabel(labelId);
+        bookInfoPOS = bookInfoService.getBookByLabelIdAndPage(pagePO, labelId);
+        int bookCount = bookInfoService.getBookCountByLabelId(labelId);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
 
         // 得到相应书籍的拥有者姓名
@@ -62,10 +62,22 @@ public class TypesController {
 
         model.addAttribute("books", bookInfoPOStringMap);
         model.addAttribute("pageInfo", pagePO);
-        model.addAttribute("labelname", labelName);
-        model.addAttribute("labelid", labelId);
+        model.addAttribute("labelName", labelName);
+        model.addAttribute("labelId", labelId);
 
-        System.out.println(pagePO);
+        // 在这里添加分页的逻辑是因为JSP页面中EL表达式对逻辑运算的支持不太良好
+        model.addAttribute("ELPageValue", (currentPage - 1) / 5 * 5);
+
+        // 当总页数大于5时，需要如下属性
+        if (pagePO.getTotalPage() >= 6) {
+            model.addAttribute("isOneOfNextFivePage", (pagePO.getTotalPage() - 1) / 5 * 5 + 1);
+            model.addAttribute("reachNextFivePage", (currentPage + 4) / 5 * 5 + 1);
+        }
+
+        // 当前页面大于等于6页的时候, 需要显示"[...]"按钮--返回到前一个5页
+        if (currentPage >= 6) {
+            model.addAttribute("returnPreFivePage", (currentPage - 1) / 5 * 5 - 4);
+        }
 
         return "showtype";
     }

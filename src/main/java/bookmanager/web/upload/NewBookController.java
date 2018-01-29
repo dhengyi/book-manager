@@ -8,6 +8,7 @@ import bookmanager.model.po.BookRelationLabelPO;
 import bookmanager.utilclass.COSStorage;
 import bookmanager.utilclass.DateToString;
 import bookmanager.utilclass.Tools;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -29,7 +31,7 @@ import java.util.*;
  * @Modified By:
  * @Description:
  */
-@WebServlet(urlPatterns = "/upload")
+@WebServlet(urlPatterns = "/auth/upload.do")
 @MultipartConfig
 public class NewBookController extends HttpServlet {
     private BookInfoService bookInfoService;
@@ -64,7 +66,7 @@ public class NewBookController extends HttpServlet {
 
         String bookName = request.getParameter("bookName");
         String author = request.getParameter("author");
-//        int uid = (Integer) request.getSession(false).getAttribute("uid");
+        int uid = (Integer) request.getSession(false).getAttribute("uid");
         int amount = Integer.parseInt(request.getParameter("amount"));
         String string = request.getParameter("types");
         String date = DateToString.getStringDate();
@@ -92,37 +94,46 @@ public class NewBookController extends HttpServlet {
         // 保存上传图片信息
         bookInfoPO.setUgkName(bookName);
         bookInfoPO.setAuthor(author);
-//        bookInfoPO.setUgkUid(uid);
-        bookInfoPO.setUgkUid(1);
+        bookInfoPO.setUgkUid(uid);
         bookInfoPO.setAmount(amount);
         bookInfoPO.setUploadDate(date);
         bookInfoPO.setBookPicture(bookPictureName);
         bookInfoPO.setDescrib(describ);
 
-        try {
-            bookInfoService.save(bookInfoPO);
-        } catch (DuplicateKeyException e) {
-            // 数据库中已经有用户要上传的信息，提醒用户应该在我的书籍页面进行信息的修改
-            e.printStackTrace();
-            return;
-        }
+        boolean isUpload = bookInfoService.save(bookInfoPO);
+        if (isUpload) {
+            // 处理书籍分类
+            Tools tools = new Tools();
+            Set<String> types = tools.getTypes(string);
 
-        // 处理书籍分类
-        Tools tools = new Tools();
-        Set<String> types = tools.getTypes(string);
-        for (String type : types) {
-            System.out.println(type);
-        }
+            // 得到新增书籍的ID
+            int bookId = bookInfoService.getBookIDByBookNameAndUID(bookName, uid);
+            // 查询所属分类的ID 并 save 至 book_relation_label表
+            for (String type : types) {
+                int labelId = bookLabelService.getPkIdByName(type);
+                BookRelationLabelPO bookRelationLabelPO = new BookRelationLabelPO(bookId, labelId);
+                bookRelationLabelService.save(bookRelationLabelPO);
+            }
 
-        // 得到新增书籍的ID
-        int bookId = bookInfoService.getBookIDByBookNameAndUID(bookName, 1);
-        // 查询所属分类的ID 并 save 至 book_relation_label表
-        for (String type : types) {
-            int labelId = bookLabelService.getPkIdByName(type);
-            BookRelationLabelPO bookRelationLabelPO = new BookRelationLabelPO(bookId, labelId);
-            bookRelationLabelService.save(bookRelationLabelPO);
+            response.sendRedirect("/auth/mybook");
+        } else {
+            printInfo(response);
         }
+    }
 
-        response.sendRedirect("mybook");
+    private void printInfo(HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("GBK");
+
+        final String MYBOOK_PAGE = "/auth/mybook";
+
+        PrintWriter out = response.getWriter();
+        String builder = "<script language=\"javascript\">" +
+                "alert(\"您已经上传过此书，请前往我的书籍页面进行信息的修改即可\");" +
+                "top.location='" +
+                MYBOOK_PAGE +
+                "';" +
+                "</script>";
+
+        out.print(builder);
     }
 }

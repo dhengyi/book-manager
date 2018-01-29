@@ -6,6 +6,9 @@ import bookmanager.annotation.Table;
 
 /**
  * Created by dela on 11/22/17.
+ *
+ * @Description: 此PO已经操作了Comparable接口，在BookUserMapUtil中使用TreeMap进行存储，
+ * 因此在数据库查询中不用对查询出来的数据进行排序
  */
 
 // 书籍信息表

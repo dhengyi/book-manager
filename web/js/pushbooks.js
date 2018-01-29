@@ -30,7 +30,7 @@ function changeoption(index) {
     }
     var input = document.getElementById("select_input");
     for (i = 0; i < lis.length; i++) {
-        lis[i].onclick = function() {
+        lis[i].onclick = function () {
             var litext = this.innerHTML;
             input.value += litext + ' ';
         }

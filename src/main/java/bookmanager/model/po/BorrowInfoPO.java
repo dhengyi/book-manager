@@ -25,8 +25,7 @@ public class BorrowInfoPO {
 
     public BorrowInfoPO() { }
 
-    public BorrowInfoPO(int pkId, int bookInfoPkId, int csUserId, String borrowDate) {
-        this.pkId = pkId;
+    public BorrowInfoPO(int bookInfoPkId, int csUserId, String borrowDate) {
         this.bookInfoPkId = bookInfoPkId;
         this.csUserId = csUserId;
         this.borrowDate = borrowDate;
@@ -62,5 +61,15 @@ public class BorrowInfoPO {
 
     public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
+    }
+
+    @Override
+    public String toString() {
+        return "BorrowInfoPO{" +
+                "pkId=" + pkId +
+                ", bookInfoPkId=" + bookInfoPkId +
+                ", csUserId=" + csUserId +
+                ", borrowDate='" + borrowDate + '\'' +
+                '}';
     }
 }

@@ -1,15 +1,13 @@
 package bookmanager.dao.dbimpl;
 
 import bookmanager.dao.dbservice.UserService;
-import bookmanager.model.po.PagePO;
 import bookmanager.model.po.UserPO;
 import bookmanager.model.vo.login.UserLoginVO;
 import bookmanager.dao.rowmapper.JdbcRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Created by dela on 11/23/17.
@@ -19,14 +17,29 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private JdbcOperations jdbcOperations;
 
+    private final static String GET_USERNAME_BY_UID = "SELECT name FROM cs_user WHERE uid = ?";
+
     private final static String GET_USER_BY_NAME = "SELECT * FROM cs_user WHERE name = ?";
     private final static String GET_USER_BY_ID = "SELECT * FROM cs_user WHERE uid = ?";
-    private final static String GET_PASSWORD_AND_UID_BY_NAME = "SELECT uid, password FROM cs_user WHERE name = ?";
-    private final static String GET_USERNAMES_BY_UIDS = "SELECT name FROM cs_user WHERE uid IN (?)";
+    private final static String GET_PASSWORD_AND_UID_BY_NAME = "SELECT uid, name, password FROM cs_user WHERE name = ?";
 
     @Autowired
-    public UserServiceImpl(JdbcOperations jdbc) {
-        this.jdbcOperations = jdbc;
+    public UserServiceImpl(JdbcOperations jdbcOperations) {
+        this.jdbcOperations = jdbcOperations;
+    }
+
+    @Override
+    public String getUserNameByUid(int uid) {
+        return jdbcOperations.queryForObject(GET_USERNAME_BY_UID, String.class, uid);
+    }
+
+    public UserLoginVO getPasswordAndUidByName(String name) {
+        try {
+            return (UserLoginVO) jdbcOperations.queryForObject(GET_PASSWORD_AND_UID_BY_NAME,
+                    JdbcRowMapper.newInstance(UserLoginVO.class), name);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public UserPO getUserByName(String name) {
@@ -36,14 +49,4 @@ public class UserServiceImpl implements UserService {
     public UserPO getUserById(int id) {
         return (UserPO) jdbcOperations.queryForObject(GET_USER_BY_ID, JdbcRowMapper.newInstance(UserPO.class), id);
     }
-
-    public UserLoginVO getPasswordAndUidByName(String name) {
-        return (UserLoginVO) jdbcOperations.queryForObject(GET_PASSWORD_AND_UID_BY_NAME,
-                JdbcRowMapper.newInstance(UserLoginVO.class), name);
-    }
-
-    public String getUsernameById(int id) {
-        return jdbcOperations.queryForObject(GET_USERNAMES_BY_UIDS, String.class, id);
-    }
-
 }

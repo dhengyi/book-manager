@@ -17,7 +17,7 @@ public class BookUserMapUtil {
         Map<BookInfoPO, String> bookMap = new TreeMap<BookInfoPO, String>();
 
         for (BookInfoPO bookInfoPO : bookInfoPOS) {
-            userNames.add(userService.getUsernameById(bookInfoPO.getUgkUid()));
+            userNames.add(userService.getUserNameByUid(bookInfoPO.getUgkUid()));
         }
 
         for (int i = 0; i < bookInfoPOS.size(); i++) {
@@ -32,7 +32,7 @@ public class BookUserMapUtil {
         String userNames;
         Map<BookInfoPO, String> bookMap = new TreeMap<BookInfoPO, String>();
 
-        userNames=userService.getUsernameById(bookInfoPO.getUgkUid());
+        userNames = userService.getUserNameByUid(bookInfoPO.getUgkUid());
         bookMap.put(bookInfoPO, userNames);
 
         return bookMap;
@@ -41,10 +41,10 @@ public class BookUserMapUtil {
     // 将多个评论的评论者id转换成对应的评论者名字
     public static Map<BookCommentPO, String> getUsername(List<BookCommentPO> bookCommentPOS, UserService userService) {
         List<String> userNames = new ArrayList<String>();
-        Map<BookCommentPO, String> bookMap = new HashMap<BookCommentPO, String>();
+        Map<BookCommentPO, String> bookMap = new TreeMap<BookCommentPO, String>();
 
         for (BookCommentPO bookCommentPO : bookCommentPOS) {
-            userNames.add(userService.getUsernameById(bookCommentPO.getCsUserId()));
+            userNames.add(userService.getUserNameByUid(bookCommentPO.getCsUserId()));
         }
 
         for (int i = 0; i < bookCommentPOS.size(); i++) {
@@ -60,7 +60,7 @@ public class BookUserMapUtil {
         Map<BookInfoPO, Integer> CountMap = new HashMap<BookInfoPO, Integer>();
 
         for (BookInfoPO bookInfoPO : bookInfoPOS) {
-            BorrowCount.add(borrowInfoService.getBorrowCount(bookInfoPO.getPkId()));
+            BorrowCount.add(borrowInfoService.getBorrowCountByBookId(bookInfoPO.getPkId()));
         }
 
         for (int i = 0; i < bookInfoPOS.size(); i++) {

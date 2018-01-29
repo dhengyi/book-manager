@@ -3,39 +3,32 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>linux图书管理</title>
+    <title>XiyouLinux Group图书借阅</title>
     <meta name="viewport" content="width=device-width,inital-scale=1,maxmum-scale=1,user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="HandleFriendly" content="true">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/img/xiyoulinux.png">
     <!--font-awesome矢量图标-->
-    <link href="/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/index.css" rel="stylesheet">
 </head>
 
 <body>
 <header>
     <div id="hea">
-        <img id="index_head" src="/img/index_head.png"/>
-        <a id="head" href="index.jsp">XiyouLinux Group 图书借阅</a>
-        <div id="index_input">
-            <form action="/search" method="post">
-                <input type="text" nam="keyword" placeholder="搜索书名/作者/归属者">
-                <input class="btn btn-link" type="submit" value="搜索"/>
-                <%--<button class="btn btn-link">搜索</button>--%>
-            </form>
-        </div>
-        <a id="index_sign" href="javascript:showDialog();">立即登录</a>
-        <%--<a id="index_sign">立即登录</a>--%>
+        <img id="index_head" src="${pageContext.request.contextPath}/img/index_head.png"/>
+        <a id="head" href="${pageContext.request.contextPath}/">XiyouLinux Group 图书借阅</a>
+        <div id="index_input"></div>
+        <a id="index_sign" href="javascript:showDialog();"><b>立即登录</b></a>
     </div>
 </header>
 <div id="main">
     <div id="tag">
         <c:forEach items="${labels}" var="label">
-            <a href="/label/${label.pkId}">${label.name}</a>
+            <a href="${pageContext.request.contextPath}/page/1?tag=${label.pkId}">${label.name}</a>
         </c:forEach>
     </div>
 
@@ -43,7 +36,7 @@
         <c:forEach items="${books}" var="book">
             <div class="rows">
                 <div class="col-xs-12 col-md-3 book_img">
-                    <img src="/img/book0.jpeg">
+                    <img src="${book.key.bookPicture}">
                 </div>
                 <div class="book_info col-xs-12 col-md-9">
                     <p>《${book.key.ugkName}》----- ${book.key.author}</p>
@@ -57,52 +50,88 @@
             </div>
         </c:forEach>
 
-
+        <%--分页的实现--%>
         <div id="index_pingination">
             <ul class="pagination">
-
-                <%--// 当当前页面不是第一页的时候, 要显示"首页"和"<<"按钮--%>
+                <%--当当前页面不是第一页的时候, 要显示"首页"和"<<"按钮--%>
                 <c:if test="${pageInfo.currentPage != 1 && pageInfo.totalPage != 0}">
-                    <li><a href="/bookmanager/1?id=${labelid}">首页</a></li>
-                    <li><a href="/bookmanager/${pageInfo.currentPage-1}?id=${labelid}">&laquo;</a></li>
+                    <c:if test="${labelId == -1}">
+                        <li><a href="${pageContext.request.contextPath}/page/1">首页</a></li>
+                        <li><a href="${pageContext.request.contextPath}/page/${pageInfo.currentPage-1}">&laquo;</a></li>
+                    </c:if>
+                    <c:if test="${labelId != -1}">
+                        <li><a href="${pageContext.request.contextPath}/page/1?tag=${labelId}">首页</a></li>
+                        <li><a href="${pageContext.request.contextPath}/page/${pageInfo.currentPage-1}?tag=${labelId}">&laquo;</a>
+                        </li>
+                    </c:if>
                 </c:if>
 
-                <%--// 当当前页面大于6页的时候, 要显示"[...]"按钮--%>
-                <c:if test="${pageInfo.currentPage > 6}">
-                    <li><a href="/bookmanager/${(pageInfo.currentPage/5-1)*5-1}?id=${labelid}">[...]</a></li>
+                <%--当当前页面大于等于6页的时候, 要显示"[...]"按钮--返回到前一个5页--%>
+                <c:if test="${pageInfo.currentPage >= 6}">
+                    <c:if test="${labelId == -1}">
+                        <li>
+                            <a href="${pageContext.request.contextPath}/page/${returnPreFivePage}">[...]</a>
+                        </li>
+                    </c:if>
+                    <c:if test="${labelId != -1}">
+                        <li>
+                            <a href="${pageContext.request.contextPath}/page/${returnPreFivePage}?tag=${labelId}">[...]</a>
+                        </li>
+                    </c:if>
                 </c:if>
 
-                <%--// 从当前这个五页起始页开始遍历--%>
-                <c:forEach varStatus="i" begin="${(pageInfo.currentPage-1)/5*5+1}"
-                           end="${(pageInfo.currentPage-1)/5*5+5}">
-
-                    <c:if test="${i.count <= pageInfo.totalPage}">
-                        <c:if test="${i.count == pageInfo.currentPage}">
-                            <li class="pa_in"><a href="#">${pageInfo.currentPage}</a></li>
+                <%--显示当前页面所有应显示的页码--%>
+                <c:forEach varStatus="i" begin="${ELPageValue+1}"
+                           end="${ELPageValue+5}" step="${1}">
+                    <c:if test="${i.current <= pageInfo.totalPage}">
+                        <%--当前页的超链接处理为不可点击--%>
+                        <c:if test="${i.current == pageInfo.currentPage}">
+                            <li class="pa_in"><a disabled="true">${pageInfo.currentPage}</a></li>
                         </c:if>
-                        <c:if test="${i.count != pageInfo.currentPage}">
-                            <li><a href="/bookmanager/${i.count}?id=${labelid}">${i.count}</a></li>
+                        <c:if test="${i.current != pageInfo.currentPage}">
+                            <c:if test="${labelId == -1}">
+                                <li><a href="${pageContext.request.contextPath}/page/${i.current}">${i.current}</a></li>
+                            </c:if>
+                            <c:if test="${labelId != -1}">
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/page/${i.current}?tag=${labelId}">${i.current}</a>
+                                </li>
+                            </c:if>
                         </c:if>
                     </c:if>
-
                 </c:forEach>
 
-                <%--// 如果不是最后一个五页的页码, 要在后面显示[...]按钮--%>
-                <c:if test="${((pageInfo.currentPage-1)/5*5+1 != (pageInfo.totalPage-1)/5*5+1) && pageInfo.totalPage > 6}">
-                    <li><a href="/bookmanager/${(pageInfo.currentPage+4)/5*5+1}?id=${labelid}">[...]</a></li>
+                <%--如果不是最后一个五页中的页码, 要在后面显示[...]按钮--跳到下一个5页--%>
+                <c:if test="${pageInfo.currentPage < isOneOfNextFivePage && pageInfo.totalPage >= 6}">
+                    <c:if test="${labelId == -1}">
+                        <li>
+                            <a href="${pageContext.request.contextPath}/page/${reachNextFivePage}">[...]</a>
+                        </li>
+                    </c:if>
+                    <c:if test="${labelId != -1}">
+                        <li>
+                            <a href="${pageContext.request.contextPath}/page/${reachNextFivePage}?tag=${labelId}">[...]</a>
+                        </li>
+                    </c:if>
                 </c:if>
 
-                <%--// 如果不是尾页, 要显示">>"和"尾页"按钮--%>
+                <%--如果不是尾页, 要显示">>"和"尾页"按钮--%>
                 <c:if test="${pageInfo.currentPage != pageInfo.totalPage && pageInfo.totalPage != 1 && pageInfo.totalPage != 0}">
-                    <li><a href="/bookmanager/${pageInfo.currentPage+1}/?id=${labelid}">&raquo;</a></li>
-                    <li><a href="/bookmanager/${pageInfo.totalPage}/?id=${labelid}">尾页</a></li>
+                    <c:if test="${labelId == -1}">
+                        <li><a href="${pageContext.request.contextPath}/page/${pageInfo.currentPage+1}">&raquo;</a></li>
+                        <li><a href="${pageContext.request.contextPath}/page/${pageInfo.totalPage}">尾页</a></li>
+                    </c:if>
+                    <c:if test="${labelId != -1}">
+                        <li><a href="${pageContext.request.contextPath}/page/${pageInfo.currentPage+1}?tag=${labelId}">&raquo;</a>
+                        </li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/page/${pageInfo.totalPage}?tag=${labelId}">尾页</a>
+                        </li>
+                    </c:if>
                 </c:if>
-
             </ul>
         </div>
-
     </div>
-
     <div style="clear:both"></div>
 </div>
 
@@ -110,20 +139,20 @@
     <div class="rows">
         <div class="col-xs-6 col-md-3">
             <p class="footer_head">友情链接</p>
-            <p><a>西邮Linux兴趣小组</a></p>
-            <p><a>西安邮电大学</a></p>
-            <p><a>西安邮电大学计算机学院</a></p>
-            <p><a>linux内核之旅</a></p>
-            <p><a>The Linux Kernel Archives</a></p>
-            <p><a>The Linux Foundation</a></p>
+            <p><a href="https://www.xiyoulinux.org">西邮Linux兴趣小组</a></p>
+            <p><a href="http://blog.xiyoulinux.org">西邮Linux兴趣小组 群博</a></p>
+            <p><a href="http://www.xiyou.edu.cn/jgsz/yxsz1/jsj31.htm">西安邮电大学计算机学院</a></p>
+            <p><a href="http://kerneltravel.eefocus.com">Linux内核之旅</a></p>
+            <p><a href="https://www.kernel.org">The Linux Kernel Archives</a></p>
+            <p><a href="https://www.linuxfoundation.org">The Linux Foundation</a></p>
         </div>
         <div class="col-xs-6 col-md-3">
             <p class="footer_head">社区</p>
-            <p>邮件列表：<a>xiyoulinux</a></p>
-            <p>新浪微博：<a>@西邮Linux兴趣小组</a></p>
-            <p>GUN：<a>GUN's Not Unix</a></p>
-            <p>LWN：<a>Linux Weekly News</a></p>
-            <p>Linux Story：<a>Linux Story</a></p>
+            <p>邮件列表：<a href="https://groups.google.com/forum/#!forum/xiyoulinux">xiyouLinux</a></p>
+            <p>新浪微博：<a href="https://weibo.com/xylinux">@西邮Linux兴趣小组</a></p>
+            <p>GNU：<a href="https://www.gnu.org">GNU's Not Unix</a></p>
+            <p>LWN：<a href="https://lwn.net">Linux Weekly News</a></p>
+            <p>Linux Story：<a href="https://linuxstory.org">Linux Story</a></p>
         </div>
         <div class="col-xs-6 col-md-3">
             <p class="footer_head">联系我们</p>
@@ -132,22 +161,21 @@
         </div>
         <div class="col-xs-6 col-md-3">
             <p class="footer_head">关注我们</p>
-            <img src="/img/weixin.jpg">
+            <img src="${pageContext.request.contextPath}/img/weixin.jpg">
         </div>
         <div style="clear: both;height:0;"></div>
     </div>
     <div id="foot">
-        <p>Copyright @ 2006-2017 西邮Linux兴趣小组 </p>
+        <p>Copyright @ 2006-2018 西邮Linux兴趣小组 </p>
         <p>All Rights Reserved</p>
     </div>
 </footer>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/canvas1.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/canvas1.js"></script>
 </body>
 
 <style type="text/css">
-
     body {
         padding: 0px;
         margin: 0px;
@@ -271,17 +299,13 @@
 </style>
 
 <div class="ui-mask" id="mask" onselectstart="return false"></div>
-
 <div class="ui-dialog" id="dialogMove" onselectstart='return false;'>
     <div class="ui-dialog-title" id="dialogDrag" onselectstart="return false;">
-
         登录通行证
-
         <a class="ui-dialog-closebutton" href="javascript:hideDialog();"></a>
-
     </div>
     <div class="ui-dialog-content">
-        <form action="/login" method="post">
+        <form action="${pageContext.request.contextPath}/login.do" method="post">
             <div class="ui-dialog-l40 ui-dialog-pt15">
                 <input class="ui-dialog-input ui-dialog-input-username" type="text" placeholder="用户名" name="name"/>
             </div>
@@ -294,29 +318,20 @@
             <br>
             <br>
             <div>
-                <%--<a class="ui-dialog-submit" href="#" >登录</a>--%>
                 <input class="ui-dialog-submit" type="submit" name="login" value="登录"/>
             </div>
-            <%--<div class="ui-dialog-l40">--%>
-            <%--<a href="#">立即注册</a>--%>
-            <%--</div>--%>
         </form>
-
     </div>
 </div>
 
 <script type="text/javascript">
-
-    var dialogInstace, onMoveStartId, mousePos = {x: 0, y: 0};	//	用于记录当前可拖拽的对象
-
-    // var zIndex = 9000;
-
-    //	获取元素对象
+    var dialogInstace, onMoveStartId, mousePos = {x: 0, y: 0};	// 用于记录当前可拖拽的对象
+    // 获取元素对象
     function g(id) {
         return document.getElementById(id);
     }
 
-    //	自动居中元素（el = Element）
+    // 自动居中元素（el = Element）
     function autoCenter(el) {
         var bodyW = document.documentElement.clientWidth;
         var bodyH = document.documentElement.clientHeight;
@@ -329,15 +344,14 @@
 
     }
 
-    //	自动扩展元素到全部显示区域
+    // 自动扩展元素到全部显示区域
     function fillToBody(el) {
         el.style.width = document.documentElement.clientWidth + 'px';
         el.style.height = document.documentElement.clientHeight + 'px';
     }
 
-    //	Dialog实例化的方法
+    // Dialog实例化的方法
     function Dialog(dragId, moveId) {
-
         var instace = {};
 
         instace.dragElement = g(dragId);	//	允许执行 拖拽操作 的元素
@@ -346,7 +360,7 @@
         stace = instace;
 
         instace.mouseOffsetLeft = 0;			//	拖拽操作时，移动元素的起始 X 点
-        instace.mouseOffsetTop = 0;			//	拖拽操作时，移动元素的起始 Y 点
+        instace.mouseOffsetTop = 0;			    //	拖拽操作时，移动元素的起始 Y 点
 
         instace.dragElement.addEventListener('mousedown', function (e) {
 
@@ -358,22 +372,21 @@
 
             onMoveStartId = setInterval(onMoveStart, 10);
             return false;
-            // instace.moveElement.style.zIndex = zIndex ++;
         })
 
         return instace;
     }
 
-    //	在页面中侦听 鼠标弹起事件
+    // 在页面中侦听 鼠标弹起事件
     document.onmouseup = function (e) {
         dialogInstace = false;
         clearInterval(onMoveStartId);
     }
+
     document.onmousemove = function (e) {
         var e = window.event || e;
         mousePos.x = e.clientX;
         mousePos.y = e.clientY;
-
 
         e.stopPropagation && e.stopPropagation();
         e.cancelBubble = true;
@@ -384,8 +397,6 @@
     }
 
     function onMoveStart() {
-
-
         var instace = dialogInstace;
         if (instace) {
 
@@ -394,12 +405,10 @@
 
             instace.moveElement.style.left = Math.min(Math.max(( mousePos.x - instace.mouseOffsetLeft), 0), maxX) + "px";
             instace.moveElement.style.top = Math.min(Math.max(( mousePos.y - instace.mouseOffsetTop ), 0), maxY) + "px";
-
         }
-
     }
 
-    //	重新调整对话框的位置和遮罩，并且展现
+    // 重新调整对话框的位置和遮罩，并且展现
     function showDialog() {
         g('dialogMove').style.display = 'block';
         g('mask').style.display = 'block';
@@ -407,27 +416,15 @@
         fillToBody(g('mask'));
     }
 
-    //	关闭对话框
+    // 关闭对话框
     function hideDialog() {
         g('dialogMove').style.display = 'none';
         g('mask').style.display = 'none';
     }
 
-    //	侦听浏览器窗口大小变化
+    // 侦听浏览器窗口大小变化
     window.onresize = showDialog;
 
     Dialog('dialogDrag', 'dialogMove');
-
-    //默认设置弹出层启动
-    //showDialog();
-
-    //取出传回来的参数error并与yes比较
-    var errori = '<%=request.getParameter("error")%>';
-    if (errori == 'yes') {
-        alert("登录失败！用户名或密码不正确！");
-        showDialog();
-    }
-
 </script>
-
 </html>

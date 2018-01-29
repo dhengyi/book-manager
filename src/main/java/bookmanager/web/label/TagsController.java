@@ -1,9 +1,7 @@
 package bookmanager.web.label;
 
 import bookmanager.dao.dbservice.BookLabelService;
-import bookmanager.dao.dbservice.UserService;
 import bookmanager.model.po.BookLabelPO;
-import bookmanager.model.vo.label.AddLabelVO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -11,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServlet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +20,14 @@ import java.util.Map;
  * @Description:
  */
 @Controller
-public class LabelTreeController {
-    @Autowired
+@RequestMapping("/auth")
+public class TagsController {
     private BookLabelService bookLabelRepository;
+
+    @Autowired
+    public TagsController(BookLabelService bookLabelRepository) {
+        this.bookLabelRepository = bookLabelRepository;
+    }
 
     @RequestMapping(value = "/tags", method = RequestMethod.GET)
     public String showLabel(Model model) {
