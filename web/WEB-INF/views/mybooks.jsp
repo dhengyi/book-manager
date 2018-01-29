@@ -57,18 +57,18 @@
             <c:forEach items="${uploadBooks}" var="uploadBook">
                 <div id="books_push" class="rows">
                     <div class="col-xs-12 col-md-2 book_img">
-                        <img src="${uploadBook.key.bookPicture}">
+                        <img src="${uploadBook.bookPicture}">
                     </div>
                     <div class="book_info col-xs-12 col-md-8">
-                        <p>《${uploadBook.key.ugkName}》-----${uploadBook.key.author}</p>
-                        <p>${uploadBook.key.describ}</p>
-                        <p><span><i class="fa fa-user"></i>${uploadBook.value}</span>
-                            <span><i class="fa fa-book"></i>被借${uploadBorrowCount.get(uploadBook.key)}次</span>
+                        <p>《${uploadBook.ugkName}》-----${uploadBook.author}</p>
+                        <p>${uploadBook.describ}</p>
+                        <p><span><i class="fa fa-book"></i>被借${uploadBorrowCount.get(uploadBook)}次</span>
+                            <span><i class="fa fa-clock-o"></i>${uploadBook.uploadDate}</span>
                         </p>
                     </div>
                     <div class="col-xs-12 col-md-2">
-                        <button class="btn" onclick="deleteBookByPkId(${uploadBook.key.pkId});">下架图书</button>
-                        <button class="btn modify" onclick="editBook(${uploadBook.key.pkId});">修改信息</button>
+                        <button class="btn" onclick="deleteBookByPkId(${uploadBook.pkId});">下架图书</button>
+                        <%--<button class="btn modify" onclick="editBook();">修改信息</button>--%>
                     </div>
                     <div style="clear:both"></div>
                 </div>
@@ -92,7 +92,7 @@
                     </div>
                     <div class="col-xs-12 col-md-2">
                         <button class="btn"
-                                onclick="returnBookByUserAndPkId(${sessionScope.uid}, ${borrowBook.key.pkId});">归还图书
+                                onclick="returnBookByUidAndPkId(${sessionScope.uid}, ${borrowBook.key.pkId});">归还图书
                         </button>
                     </div>
                     <div style="clear:both"></div>
@@ -188,14 +188,15 @@
     </div>
 </div>
 <div id="mask"></div>
+<%--TODO 将来使用AJAX的时候再进行实现--%>
 <%--<form id="box">--%>
-    <%--<h3>修改图书信息<img src="${pageContext.request.contextPath}/img/close_def.png" id="close"></h3>--%>
-    <%--<input type="hidden" id="bookpkid" name="pkId">--%>
-    <%--<p>书名：<input type="text" id="bookname" name="ugkName"></p>--%>
-    <%--<p>作者：<input type="text" id="author" name="author"></p>--%>
-    <%--<p>数量：<input type="text" id="count" name="amount"></p>--%>
-    <%--<p>描述：<textarea cols="30" rows="2" id="desc" name="describ"></textarea></p>--%>
-    <%--<button onclick="updateBook()">更新</button>--%>
+<%--<h3>修改图书信息<img src="${pageContext.request.contextPath}/img/close_def.png" id="close"></h3>--%>
+<%--<input type="hidden" id="bookpkid" name="pkId">--%>
+<%--<p>书名：<input type="text" id="bookname" name="ugkName"></p>--%>
+<%--<p>作者：<input type="text" id="author" name="author"></p>--%>
+<%--<p>数量：<input type="text" id="count" name="amount"></p>--%>
+<%--<p>描述：<textarea cols="30" rows="2" id="desc" name="describ"></textarea></p>--%>
+<%--<button onclick="updateBook()">更新</button>--%>
 <%--</form>--%>
 <footer>
     <div class="rows">
@@ -241,22 +242,22 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/mybooks.js"></script>
 
 <script type="text/javascript">
-    function returnBookByUserAndPkId(uid, pkId) {
-        $.post("/auth/mybook/returnbook", {"csUserId": uid, "bookInfoPkId": pkId}, function () {
-            alert("您已成功归还了此图书！");
-            window.location = "${pageContext.request.contextPath}/auth/mybook/borrow";
-        });
-    }
-
     function deleteBookByPkId(pk_id) {
-        $.post("/auth/mybook/deletebook", {"pkId": pk_id}, function () {
+        $.post("/auth/mybook/delete", {"pkId": pk_id}, function () {
             alert("您已成功下架了此图书！");
             window.location = "${pageContext.request.contextPath}/auth/mybook";
         });
     }
 
-    function editBook(bookId) {
-        window.location = "${pageContext.request.contextPath}/auth/edit?id=" + bookId;
+    function editBook() {
+        window.location = "${pageContext.request.contextPath}/auth/mybook/update";
+    }
+
+    function returnBookByUidAndPkId(uid, pkId) {
+        $.post("/auth/mybook/return", {"csUserId": uid, "bookInfoPkId": pkId}, function () {
+            alert("您已成功归还了此图书！");
+            window.location = "${pageContext.request.contextPath}/auth/mybook/borrow";
+        });
     }
 
     //    function editBook(pkId) {

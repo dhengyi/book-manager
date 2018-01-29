@@ -1,4 +1,4 @@
-package bookmanager.model.vo.mybook;
+package bookmanager.model.vo;
 
 import bookmanager.model.po.BookInfoPO;
 

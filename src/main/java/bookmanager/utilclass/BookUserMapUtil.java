@@ -11,7 +11,7 @@ import java.util.*;
  * Created by dela on 1/2/18.
  */
 public class BookUserMapUtil {
-    // 把多个图书的上传者id对应为用户名
+    // 把多个图书信息中的uid对应为用户名
     public static Map<BookInfoPO, String> getBookInfo(List<BookInfoPO> bookInfoPOS, UserService userService) {
         List<String> userNames = new ArrayList<String>();
         Map<BookInfoPO, String> bookMap = new TreeMap<BookInfoPO, String>();
@@ -25,6 +25,22 @@ public class BookUserMapUtil {
         }
 
         return bookMap;
+    }
+
+    // 获取多个书的被借次数
+    public static Map<BookInfoPO, Integer> getBorrowCount(List<BookInfoPO> bookInfoPOS, BorrowInfoService borrowInfoService) {
+        List<Integer> BorrowCount = new ArrayList<Integer>();
+        Map<BookInfoPO, Integer> CountMap = new HashMap<BookInfoPO, Integer>();
+
+        for (BookInfoPO bookInfoPO : bookInfoPOS) {
+            BorrowCount.add(borrowInfoService.getBorrowCountByBookId(bookInfoPO.getPkId()));
+        }
+
+        for (int i = 0; i < bookInfoPOS.size(); i++) {
+            CountMap.put(bookInfoPOS.get(i), BorrowCount.get(i));
+        }
+
+        return CountMap;
     }
 
     // 将一个书的上传者id对应为名字
@@ -52,21 +68,5 @@ public class BookUserMapUtil {
         }
 
         return bookMap;
-    }
-
-    // 获取多个书的被借次数
-    public static Map<BookInfoPO, Integer> getBorrowCount(List<BookInfoPO> bookInfoPOS, BorrowInfoService borrowInfoService) {
-        List<Integer> BorrowCount = new ArrayList<Integer>();
-        Map<BookInfoPO, Integer> CountMap = new HashMap<BookInfoPO, Integer>();
-
-        for (BookInfoPO bookInfoPO : bookInfoPOS) {
-            BorrowCount.add(borrowInfoService.getBorrowCountByBookId(bookInfoPO.getPkId()));
-        }
-
-        for (int i = 0; i < bookInfoPOS.size(); i++) {
-            CountMap.put(bookInfoPOS.get(i), BorrowCount.get(i));
-        }
-
-        return CountMap;
     }
 }

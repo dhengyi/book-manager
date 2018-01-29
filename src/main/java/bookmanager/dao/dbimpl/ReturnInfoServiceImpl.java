@@ -19,7 +19,7 @@ import java.util.Date;
 public class ReturnInfoServiceImpl implements ReturnInfoService {
     private JdbcOperations jdbcOperations;
 
-    private final static String RETURN_BOOK_BY_USERANDPK_ID = "INSERT INTO return_info(book_info_pk_id, cs_user_uid, return_date) VALUES(?, ?, ?)";
+    private final static String SAVE = "INSERT INTO return_info(book_info_pk_id, cs_user_uid, return_date) VALUES(?, ?, ?)";
 
     @Autowired
     public ReturnInfoServiceImpl(JdbcOperations jdbc) {
@@ -27,7 +27,7 @@ public class ReturnInfoServiceImpl implements ReturnInfoService {
     }
 
     @Override
-    public void returnBookByUserAndPkId(ReturnInfoPO returnInfoPO) {
-        jdbcOperations.update(RETURN_BOOK_BY_USERANDPK_ID, returnInfoPO.getBookInfoPkId(), returnInfoPO.getCsUserId(), new Date());
+    public void save(ReturnInfoPO returnInfoPO) {
+        jdbcOperations.update(SAVE, returnInfoPO.getBookInfoPkId(), returnInfoPO.getCsUserId(), new Date());
     }
 }

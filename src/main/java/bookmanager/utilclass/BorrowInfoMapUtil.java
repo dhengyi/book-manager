@@ -1,6 +1,6 @@
 package bookmanager.utilclass;
 
-import bookmanager.model.vo.borrowinfo.BorrowInfoVO;
+import bookmanager.model.vo.BorrowInfoVO;
 
 import java.util.List;
 import java.util.Map;

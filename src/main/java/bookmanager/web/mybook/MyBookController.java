@@ -4,37 +4,39 @@ import bookmanager.dao.dbservice.*;
 import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.model.po.ReturnInfoPO;
-import bookmanager.model.vo.mybook.EditBook;
 import bookmanager.utilclass.BookUserMapUtil;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by dongmengyuan on 18-1-3.
+ *
+ * @Description: 我的书籍页面对应的控制器
  */
 
 @Controller
 @RequestMapping(value = "/auth/mybook")
-public class MyBook {
+public class MyBookController {
     private UserService userService;
     private BookInfoService bookInfoService;
     private ReturnInfoService returnInfoService;
     private BorrowInfoService borrowInfoService;
 
     @Autowired
-    public MyBook(UserService userService, BookInfoService bookInfoService, ReturnInfoService returnInfoService, BorrowInfoService borrowInfoService) {
+    public MyBookController(UserService userService, BookInfoService bookInfoService, ReturnInfoService returnInfoService, BorrowInfoService borrowInfoService) {
         this.userService = userService;
         this.bookInfoService = bookInfoService;
         this.returnInfoService = returnInfoService;
@@ -55,19 +57,18 @@ public class MyBook {
         int uid = Integer.parseInt(obj.toString());
 
         // 获取我所上传的书的总数
-        int uploadBookCount = bookInfoService.getBookCountByUid(uid);
+        int uploadBookCount = bookInfoService.getUploadBookCountByUid(uid);
+        pagePO.setTotalCount(uploadBookCount);
         pagePO.setTotalPage((uploadBookCount % 5 == 0) ? uploadBookCount / 5 : uploadBookCount / 5 + 1);
 
         // 获取我所上传的书(根据页数)
-        List<BookInfoPO> uploadBookInfos = bookInfoService.getUploadBookByUid(uid, pagePO);
-        // 用工具类根据上传者的id找到上传者的名字
-        Map<BookInfoPO, String> uploadBookInfosMap = BookUserMapUtil.getBookInfo(uploadBookInfos, userService);
+        List<BookInfoPO> uploadBookInfos = bookInfoService.getUploadBookByUidAndPage(uid, pagePO);
         // 获取我上传的书的被借次数
         Map<BookInfoPO, Integer> uploadBorrowCount = BookUserMapUtil.getBorrowCount(uploadBookInfos, borrowInfoService);
 
         // 把数据封装起来传给前端页面
         model.addAttribute("uploadBorrowCount", uploadBorrowCount);
-        model.addAttribute("uploadBooks", uploadBookInfosMap);
+        model.addAttribute("uploadBooks", uploadBookInfos);
         model.addAttribute("pageInfo", pagePO);
         model.addAttribute("select", 0);
 
@@ -104,11 +105,12 @@ public class MyBook {
 
         // 获取我所借阅的书的总数
         int borrowBookCount = borrowInfoService.getBorrowCountByUid(uid);
+        pagePO.setTotalCount(borrowBookCount);
         pagePO.setTotalPage((borrowBookCount % 5 == 0) ? borrowBookCount / 5 : borrowBookCount / 5 + 1);
 
         // 获取我所借阅的书
         List<BookInfoPO> borrowBookInfoPOS = bookInfoService.getBorrowBookByUid(uid, pagePO);
-        // 用工具类根据借阅者的id找到借阅者的名字
+        // 用工具类找到被借阅书籍的所有者姓名
         Map<BookInfoPO, String> borrowBookInfosMap = BookUserMapUtil.getBookInfo(borrowBookInfoPOS, userService);
         // 获取我借阅的书被借次数
         Map<BookInfoPO, Integer> borrowBookCountMap = BookUserMapUtil.getBorrowCount(borrowBookInfoPOS, borrowInfoService);
@@ -137,51 +139,72 @@ public class MyBook {
     }
 
     // 下架图书意味着删除数据库中与这本书所关联的所有信息
-    @RequestMapping(value = "/deletebook", method = RequestMethod.POST)
-    public String deleteBook(int pkId, HttpServletResponse response) throws IOException {
-        bookInfoService.deleteBook(pkId);
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public String deleteBook(int pkId) throws IOException {
+        bookInfoService.deleteBookByBookId(pkId);
 
         return "mybooks";
     }
 
-    // 编辑图书信息
-    @RequestMapping(value = "/editbook", method = RequestMethod.POST)
-    public void editBook(Integer pkId, HttpServletResponse response) throws IOException {
-        // 获取图书信息
-        BookInfoPO book = bookInfoService.getBookByPkId(pkId);
+//    // 展现更新图书信息的页面
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public String updateBook() throws ServletException, IOException {
+//        return null;
+//    }
+//
+//    // 更新书籍后进行的后台处理
+//    @RequestMapping(value = "/edit.do", method = RequestMethod.POST)
+//    public void editBookInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        request.setCharacterEncoding("utf8");
+//        response.setCharacterEncoding("utf8");
+//
+//        int bookId = Integer.parseInt(request.getParameter("bookId"));
+//        String bookName = request.getParameter("bookName");
+//        String author = request.getParameter("author");
+//        int amount = Integer.parseInt(request.getParameter("amount"));
+//
+//        BookInfoPO bookInfoPO = new BookInfoPO();
+//
+//        // 保存修改书籍的信息
+//        bookInfoPO.setPkId(bookId);
+//        bookInfoPO.setUgkName(bookName);
+//        bookInfoPO.setAuthor(author);
+//        bookInfoPO.setAmount(amount);
+//
+//        bookInfoService.updateBook(bookInfoPO);
+//
+//        response.sendRedirect("/auth/mybook");
+//    }
 
-        // 自己封装的vo
-        EditBook edit = new EditBook();
-        edit.setBookInfoPO(book);
-
-        // 将返回的数据转换成json格式
-        Gson gson = new Gson();
-        String json = gson.toJson(edit);
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=utf-8");
-        PrintWriter writer = response.getWriter();
-        // 将json字符串返回到前端
-        writer.append(json);
-    }
-
-    // 更新图书信息
-    @RequestMapping(value = "/updatebook", method = RequestMethod.POST)
-    public String updateBook(BookInfoPO bookInfoPO) {
-        System.out.println(bookInfoPO.toString());
-        bookInfoService.updateBook(bookInfoPO);
-
-        return "mybooks";
-    }
+    // TODO 更新图书信息的AJAX做法
+//    @RequestMapping(value = "/editbook", method = RequestMethod.POST)
+//    public void editBook(Integer pkId, HttpServletResponse response) throws IOException {
+//        // 获取图书信息
+//        BookInfoPO book = bookInfoService.getBookByPkId(pkId);
+//
+//        // 自己封装的vo
+//        EditBook edit = new EditBook();
+//        edit.setBookInfoPO(book);
+//
+//        // 将返回的数据转换成json格式
+//        Gson gson = new Gson();
+//        String json = gson.toJson(edit);
+//        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("application/json; charset=utf-8");
+//        PrintWriter writer = response.getWriter();
+//        // 将json字符串返回到前端
+//        writer.append(json);
+//    }
 
     // 归还图书
-    @RequestMapping(value = "/returnbook", method = RequestMethod.POST)
-    public String returnBook(ReturnInfoPO returnInfoPO, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/return", method = RequestMethod.POST)
+    public String returnBook(ReturnInfoPO returnInfoPO) throws IOException {
         // 添加归还信息
-        returnInfoService.returnBookByUserAndPkId(returnInfoPO);
+        returnInfoService.save(returnInfoPO);
         // 更新书籍信息表中书籍的数量
-        bookInfoService.updateBookCountByPkId(returnInfoPO.getBookInfoPkId());
+        bookInfoService.updateBookCountByBookId(returnInfoPO.getBookInfoPkId());
         // 删除借阅表中的数据
-        borrowInfoService.deleteBorrowInfo(returnInfoPO.getBookInfoPkId(), returnInfoPO.getCsUserId());
+        borrowInfoService.deleteBorrowInfoByBookIdAndUid(returnInfoPO.getBookInfoPkId(), returnInfoPO.getCsUserId());
 
         return "mybooks";
     }

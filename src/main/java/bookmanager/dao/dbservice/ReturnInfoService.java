@@ -6,6 +6,6 @@ import bookmanager.model.po.ReturnInfoPO;
  * Created by dela on 11/23/17.
  */
 public interface ReturnInfoService {
-    // 根据uid和PkId归还图书
-    void returnBookByUserAndPkId(ReturnInfoPO returnInfoPO);
+    // 添加归还信息
+    void save(ReturnInfoPO returnInfoPO);
 }

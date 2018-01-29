@@ -1,4 +1,4 @@
-package bookmanager.model.vo.login;
+package bookmanager.model.vo;
 
 import bookmanager.annotation.Column;
 import bookmanager.annotation.Table;
@@ -17,21 +17,15 @@ public class UserLoginVO {
 
     @Column(name = "name")
     @NotNull
-    @Size(min=1, max=16)
+    @Size(min = 1, max = 16)
     private String name;
 
     @Column(name = "password")
     @NotNull
-    @Size(min=1, max=16)
+    @Size(min = 1, max = 16)
     private String password;
 
     public UserLoginVO() {
-
-    }
-
-    public UserLoginVO(String name, String password) {
-        this.name = name;
-        this.password = password;
     }
 
     public UserLoginVO(int uid, String name, String password) {

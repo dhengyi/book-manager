@@ -1,7 +1,7 @@
 package bookmanager.web.loginandunlogin;
 
 import bookmanager.dao.dbservice.UserService;
-import bookmanager.model.vo.login.UserLoginVO;
+import bookmanager.model.vo.UserLoginVO;
 import bookmanager.utilclass.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /**
  * Created by dela on 11/27/17.
  *
- * @Description: 这个类的功能就一个，用来处理登录框
+ * @Description: 登录框对应的控制器
  */
 
 @Controller
@@ -50,7 +50,7 @@ public class LoginController {
     }
 
     private boolean checkPassword(String username, String password, UserLoginVO user) {
-        UserLoginVO userLoginVO = userService.getPasswordAndUidByName(username);
+        UserLoginVO userLoginVO = userService.getPasswordAndUidByUsername(username);
 
         String codePasswd = MD5.codeByMD5(password);
         if (userLoginVO != null) {

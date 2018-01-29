@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by dela on 1/21/18.
  *
- * @Description: 用来显示登录后主页面的控制器
+ * @Description: 登录后主页面对应的控制器
  */
 
 @Controller
@@ -63,7 +63,7 @@ public class MainController {
         pagePO.setTotalCount(bookCount);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
 
-        List<BookLabelPO> bookLabelPOS = bookLabelService.getBookLabelById(0);
+        List<BookLabelPO> bookLabelPOS = bookLabelService.getBookLabelByParentId(0);
         if (labelId == -1) {
             bookInfoPOS = bookInfoService.getBookByPage(pagePO);
         } else {

@@ -28,21 +28,20 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/auth/showbook")
-public class ShowBook {
+public class ShowBookController {
     private UserService userService;
     private BookInfoService bookInfoService;
     private BorrowInfoService borrowInfoService;
     private BookCommentService bookCommentService;
 
     @Autowired
-    public ShowBook(UserService userService, BookInfoService bookInfoService, BorrowInfoService borrowInfoService,
+    public ShowBookController(UserService userService, BookInfoService bookInfoService, BorrowInfoService borrowInfoService,
                     BookCommentService bookCommentService) {
         this.userService = userService;
         this.bookInfoService = bookInfoService;
         this.borrowInfoService = borrowInfoService;
         this.bookCommentService = bookCommentService;
     }
-
 
     //显示图书详情
     @RequestMapping(value = "/{bookInfoPkId}", method = RequestMethod.GET)
@@ -54,7 +53,7 @@ public class ShowBook {
         }
         PagePO pagePO = new PagePO(currentPage);
 
-        BookInfoPO bookInfoPO = bookInfoService.getBookByPkId(bookInfoPkId);
+        BookInfoPO bookInfoPO = bookInfoService.getBookInfoByBookId(bookInfoPkId);
         // 获取此图书的借阅总数
         int borrowCount = borrowInfoService.getBorrowCountByBookId(bookInfoPkId);
         // 获取此图书下的评论的总数

@@ -2,7 +2,7 @@ package bookmanager.dao.dbimpl;
 
 import bookmanager.dao.dbservice.UserService;
 import bookmanager.model.po.UserPO;
-import bookmanager.model.vo.login.UserLoginVO;
+import bookmanager.model.vo.UserLoginVO;
 import bookmanager.dao.rowmapper.JdbcRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,11 +17,13 @@ import org.springframework.stereotype.Repository;
 public class UserServiceImpl implements UserService {
     private JdbcOperations jdbcOperations;
 
+    private final static String GET_PASSWORD_AND_UID_BY_USERNAME = "SELECT uid, name, password FROM cs_user WHERE name = ?";
+
     private final static String GET_USERNAME_BY_UID = "SELECT name FROM cs_user WHERE uid = ?";
 
     private final static String GET_USER_BY_NAME = "SELECT * FROM cs_user WHERE name = ?";
+
     private final static String GET_USER_BY_ID = "SELECT * FROM cs_user WHERE uid = ?";
-    private final static String GET_PASSWORD_AND_UID_BY_NAME = "SELECT uid, name, password FROM cs_user WHERE name = ?";
 
     @Autowired
     public UserServiceImpl(JdbcOperations jdbcOperations) {
@@ -29,17 +31,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getUserNameByUid(int uid) {
-        return jdbcOperations.queryForObject(GET_USERNAME_BY_UID, String.class, uid);
-    }
-
-    public UserLoginVO getPasswordAndUidByName(String name) {
+    public UserLoginVO getPasswordAndUidByUsername(String name) {
         try {
-            return (UserLoginVO) jdbcOperations.queryForObject(GET_PASSWORD_AND_UID_BY_NAME,
+            return (UserLoginVO) jdbcOperations.queryForObject(GET_PASSWORD_AND_UID_BY_USERNAME,
                     JdbcRowMapper.newInstance(UserLoginVO.class), name);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public String getUserNameByUid(int uid) {
+        return jdbcOperations.queryForObject(GET_USERNAME_BY_UID, String.class, uid);
     }
 
     public UserPO getUserByName(String name) {

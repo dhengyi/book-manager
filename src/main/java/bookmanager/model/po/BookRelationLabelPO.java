@@ -1,13 +1,22 @@
 package bookmanager.model.po;
 
+import bookmanager.annotation.Column;
+import bookmanager.annotation.Table;
+
 /**
  * Created by dela on 11/22/17.
  */
 
 //书籍与标签关系表
+@Table(name = "book_relation_label")
 public class BookRelationLabelPO {
+    @Column(name = "pk_id")
     private int pkId;           // 无意义主键
+
+    @Column(name = "book_info_pk_id")
     private int bookInfoPkId;   // bookInfo这张表里的主键
+
+    @Column(name = "book_label_pk_id")
     private int bookLabelPkId;  // bookLable这张表里的主键
 
     public BookRelationLabelPO() { }

@@ -54,11 +54,6 @@ public class NewBookController extends HttpServlet {
      * @return:
      * @description: 上传成功跳转至我的书籍页面，上传失败回填表单
      */
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher(request.getContextPath() + "/WEB-INF/view/pushbook.jsp").forward(request, response);
-    }
-
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("utf8");
@@ -108,7 +103,7 @@ public class NewBookController extends HttpServlet {
 
             // 得到新增书籍的ID
             int bookId = bookInfoService.getBookIDByBookNameAndUID(bookName, uid);
-            // 查询所属分类的ID 并 save 至 book_relation_label表
+            // 查询所属分类的id并save至book_relation_label表
             for (String type : types) {
                 int labelId = bookLabelService.getPkIdByName(type);
                 BookRelationLabelPO bookRelationLabelPO = new BookRelationLabelPO(bookId, labelId);
@@ -128,7 +123,7 @@ public class NewBookController extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         String builder = "<script language=\"javascript\">" +
-                "alert(\"您已经上传过此书，请前往我的书籍页面进行信息的修改即可\");" +
+                "alert(\"您已经上传过此书，请前往我的书籍页面进行信息的修改即可！\");" +
                 "top.location='" +
                 MYBOOK_PAGE +
                 "';" +

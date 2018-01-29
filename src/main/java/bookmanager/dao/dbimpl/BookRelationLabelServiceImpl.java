@@ -20,10 +20,11 @@ import java.util.List;
 public class BookRelationLabelServiceImpl implements BookRelationLabelService {
     private JdbcOperations jdbcOperations;
 
-    private final static String INSERT_NEW_BOOK_RELATION_LABEL = "INSERT INTO book_relation_label (book_info_pk_id, book_label_pk_id) " +
+    private final static String SAVE = "INSERT INTO book_relation_label (book_info_pk_id, book_label_pk_id) " +
             "VALUES (?, ?)";
-    private final static String QUERY_BOOKID_BY_LABELID = "SELECT book_info_pk_id FROM book_relation_label WHERE label_tree_pk_id = ? " +
-            "ORDER BY book_info_pk_id DESC LIMIT ?, ?";
+
+
+
 
     private final static String QUERY_BOOKCOUNT_UNDER_LABEL_BY_LABELID = "SELECT COUNT(book_info_pk_id) " +
             "FROM book_relation_label WHERE book_label_pk_id = ?";
@@ -36,16 +37,14 @@ public class BookRelationLabelServiceImpl implements BookRelationLabelService {
     }
 
     @Override
-    // 该数据库操作方法还没有实现
-    public List<BookInfoPO> getListBookInfoByLabelId(int labelId) {
-        return null;
+    public void save(BookRelationLabelPO bookRelationLabel) {
+        jdbcOperations.update(SAVE, bookRelationLabel.getBookInfoPkId(), bookRelationLabel.getBookLabelPkId());
     }
 
-    @Override
-    // 该数据库操作方法还没有实现
-    public void save(BookRelationLabelPO bookRelationLabel) {
-        jdbcOperations.update(INSERT_NEW_BOOK_RELATION_LABEL, bookRelationLabel.getBookInfoPkId(), bookRelationLabel.getBookLabelPkId());
-    }
+
+
+
+
 
     @Override
     public int getBookCountUnderLabel(int labelId) {

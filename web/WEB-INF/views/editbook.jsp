@@ -30,12 +30,13 @@
 <div id="main">
     <p class="head">修改数据</p>
     <hr>
-    <form action="${pageContext.request.contextPath}/auth/edit.do?id=${bookInfo.pkId}" method="post">
+    <form action="${pageContext.request.contextPath}/auth/mybook/edit.do" method="post">
         <div class="rows con">
             <div class="col-xs-12 col-md-3">
                 书名：
             </div>
             <div class="col-xs-12 col-md-6">
+                <input type="hidden" name="bookId" value="${bookInfo.pkId}">
                 <input type="text" name="bookName" value="${bookInfo.ugkName}" required>
             </div>
             <div style="clear:both"></div>

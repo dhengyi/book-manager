@@ -8,7 +8,6 @@ import bookmanager.utilclass.BookUserMapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,6 +21,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * Created by dela on 1/6/18.
+ *
+ * @Description: 登录后搜索框对应的控制器
  */
 
 @Controller
@@ -44,13 +45,14 @@ public class SearchBooksController {
         String keyword = new String(httpServletRequest.getParameter("keyword").getBytes("iso-8859-1"), "utf-8");
         model.addAttribute("keyword", keyword);
 
-        keyword = "%" + keyword + "%";
-        List<BookInfoPO> bookInfoPOList = bookInfoService.getBookInfoByNAOByPage(keyword, pagePO);
-
         int bookCount = bookInfoService.getBookCountByNAO(keyword);
+        pagePO.setTotalCount(bookCount);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
 
-        Map<BookInfoPO, String> bookInfoPOStringMap = BookUserMapUtil.getBookInfo(bookInfoPOList, userService);
+        keyword = "%" + keyword + "%";
+        List<BookInfoPO> bookInfoPOS = bookInfoService.getBookInfoByNAOAndPage(keyword, pagePO);
+
+        Map<BookInfoPO, String> bookInfoPOStringMap = BookUserMapUtil.getBookInfo(bookInfoPOS, userService);
 
         model.addAttribute("books", bookInfoPOStringMap);
         model.addAttribute("pageInfo", pagePO);
@@ -79,11 +81,12 @@ public class SearchBooksController {
         keyword = new String(keyword.getBytes("iso-8859-1"), "utf-8");
         model.addAttribute("keyword", keyword);
 
-        keyword = "%" + keyword + "%";
-        List<BookInfoPO> bookInfoPOList = bookInfoService.getBookInfoByNAOByPage(keyword, pagePO);
-
         int bookCount = bookInfoService.getBookCountByNAO(keyword);
+        pagePO.setTotalCount(bookCount);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
+
+        keyword = "%" + keyword + "%";
+        List<BookInfoPO> bookInfoPOList = bookInfoService.getBookInfoByNAOAndPage(keyword, pagePO);
 
         Map<BookInfoPO, String> bookInfoPOStringMap = BookUserMapUtil.getBookInfo(bookInfoPOList, userService);
         model.addAttribute("books", bookInfoPOStringMap);

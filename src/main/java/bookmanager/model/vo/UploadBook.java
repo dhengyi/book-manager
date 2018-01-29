@@ -1,4 +1,4 @@
-package bookmanager.model.vo.bookinfo;
+package bookmanager.model.vo;
 
 
 import javax.validation.constraints.Max;

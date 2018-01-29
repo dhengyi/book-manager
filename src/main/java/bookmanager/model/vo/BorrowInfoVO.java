@@ -1,4 +1,4 @@
-package bookmanager.model.vo.borrowinfo;
+package bookmanager.model.vo;
 
 /**
  * Created by dela on 1/6/18.

@@ -20,37 +20,47 @@ import java.util.List;
 public class BookInfoServiceImpl implements BookInfoService {
     private JdbcOperations jdbcOperations;
 
-//    private final static String GET_BOOKINFO_BY_BOOKLABEL_PARENT_ID =
+    //    private final static String GET_BOOKINFO_BY_BOOKLABEL_PARENT_ID =
 //            "SELECT * FROM book_info WHERE pk_id IN (" +
 //                    "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id IN (" +
 //                    "SELECT pk_id FROM book_label WHERE parent_id = ?)) AND amount > 0";
     private final static String GET_BOOK_COUNT = "SELECT COUNT(*) AS COUNT FROM book_info WHERE amount > 0";
 
-    private final static String GET_ONE_PAGE_BOOKINFO = "SELECT * FROM book_info WHERE amount > 0 LIMIT ?, ?";
-
-    private final static String GET_ONE_PAGE_BOOKINFO_UID = "SELECT pk_id FROM book_info WHERE amount > 0 LIMIT ?, ?";
-
-    private final static String GET_BOOK_BY_LABEL_AND_PAGE = "SELECT * FROM book_info WHERE pk_id IN (" +
-            "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id IN (" +
-            "SELECT pk_id FROM book_label WHERE parent_id = ?)) AND amount > 0 LIMIT ?, ?";
-
-    private final static String GET_BOOK_BY_LABEL_AND_PAGE_TYPESCONTROLLER = "SELECT * FROM book_info WHERE pk_id IN (" +
-            "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id = ?) AND amount > 0 LIMIT ?, ?";
-
-    private final static String GET_BOOK_COUNT_BY_LABEL = "SELECT COUNT(*) AS COUNT FROM book_info WHERE pk_id IN (" +
+    private final static String GET_BOOK_COUNT_BY_LABELID = "SELECT COUNT(*) AS COUNT FROM book_info WHERE pk_id IN (" +
             "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id IN (" +
             "SELECT pk_id FROM book_label WHERE parent_id = ?)) AND amount > 0";
+
+    private final static String GET_ONE_PAGE_BOOKINFO = "SELECT * FROM book_info WHERE amount > 0 ORDER BY pk_id DESC LIMIT ?, ?";
+
+    private final static String GET_BOOK_BY_LABELID_AND_PAGE = "SELECT * FROM book_info WHERE pk_id IN (" +
+            "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id IN (" +
+            "SELECT pk_id FROM book_label WHERE parent_id = ?)) AND amount > 0 ORDER BY pk_id DESC LIMIT ?, ?";
+
+    private final static String GET_BOOK_BY_LABEL_AND_PAGE_TYPESCONTROLLER = "SELECT * FROM book_info WHERE pk_id IN (" +
+            "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id = ?) AND amount > 0 ORDER BY pk_id DESC LIMIT ?, ?";
+
+    private final static String GET_ONE_PAGE_BOOKINFO_UID = "SELECT pk_id FROM book_info WHERE amount > 0 LIMIT ?, ?";
 
     private final static String GET_BOOK_COUNT_BY_LABEL_TYPESCONTROLLER = "SELECT COUNT(*) AS COUNT FROM book_info WHERE pk_id IN (" +
             "SELECT book_info_pk_id FROM book_relation_label WHERE book_label_pk_id = ?) AND amount > 0";
 
-    private final static String GET_BOOK_BY_NAO_BY_PAGE_UNLOGIN = "SELECT * FROM book_info WHERE (" +
+    private final static String GET_BOOK_BY_NAO_BY_PAGE = "SELECT * FROM book_info WHERE (" +
             "ugk_name LIKE ? OR author LIKE ?) UNION SELECT * FROM book_info WHERE " +
-            "ugk_uid IN (SELECT uid FROM cs_user WHERE name LIKE ?) AND amount > 0 LIMIT ?, ?";
+            "ugk_uid IN (SELECT uid FROM cs_user WHERE name LIKE ?) AND amount > 0 ORDER BY pk_id DESC LIMIT ?, ?";
 
-    private final static String GET_BOOK_BY_NAO = "SELECT * FROM book_info WHERE (" +
-            "ugk_name LIKE ? OR author LIKE ?) UNION SELECT * FROM book_info WHERE " +
-            "ugk_uid IN (SELECT uid FROM cs_user WHERE name LIKE ?)";
+    private final static String GET_BOOK_COUNT_BY_UID = "SELECT COUNT(*) FROM book_info WHERE ugk_uid = ?";
+
+    private final static String GET_UPLOAD_BOOK_BY_UID_AND_PAGE = "SELECT * FROM book_info WHERE ugk_uid = ? ORDER BY pk_id DESC LIMIT ?, ?";
+
+    private final static String GET_BORROW_BOOK_BY_UID = "SELECT * FROM book_info WHERE pk_id IN (SELECT book_info_pk_id FROM borrow_info WHERE cs_user_uid = ?) LIMIT ?, ?";
+
+    private final static String DELETE_BOOK_BY_BOOKINFOPO = "DELETE FROM book_info WHERE pk_id = ?";
+
+    private final static String UPDATE_BOOK_COUNT_BY_BOOKID = "UPDATE book_info SET amount=amount+1 WHERE pk_id = ?";
+
+
+
+
 
     private final static String INSERT_BOOK_INFO = "INSERT INTO book_info (ugk_name, author, ugk_uid, amount, upload_date, book_picture, describ)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -58,17 +68,7 @@ public class BookInfoServiceImpl implements BookInfoService {
     private final static String QUERY_BOOK_INFO_PKID_BY_UGK_NAME_AND_UGK_UID = "SELECT pk_id FROM book_info " +
             "WHERE ugk_name = ? AND ugk_uid = ?";
 
-    private final static String GET_BOOKINFO_BY_ID = "SELECT * FROM book_info WHERE pk_id = ?";
-
-    private final static String GET_BORROW_BOOK_BY_UID = "SELECT * FROM book_info WHERE pk_id IN (SELECT book_info_pk_id FROM borrow_info WHERE cs_user_uid = ?) LIMIT ?, ?";
-
-    private final static String GET_UPLOAD_BOOK_BY_UID = "SELECT * FROM book_info WHERE ugk_uid = ? LIMIT ?, ?";
-
-    private final static String GET_BOOK_COUNT_BY_UID = "SELECT COUNT(*) FROM book_info WHERE ugk_uid = ?";
-
-    private final static String DELETE_BOOK_BY_BOOKINFOPO = "DELETE FROM book_info WHERE pk_id = ?";
-
-    private final static String GET_BOOK_BY_PKID = "SELECT * FROM book_info WHERE pk_id = ?";
+    private final static String GET_BOOKINFO_BY_BOOKID = "SELECT * FROM book_info WHERE pk_id = ?";
 
     private final static String GET_PARENT_BOOK_CLASS_BY_PK_ID = "SELECT name FROM book_label WHERE pk_id IN (SELECT parent_id FROM book_label WHERE pk_id IN (SELECT book_label_pk_id FROM book_relation_label WHERE book_info_pk_id = ?))";
 
@@ -79,8 +79,6 @@ public class BookInfoServiceImpl implements BookInfoService {
     private final static String GET_BOOK_COUNT_BY_NAO = "SELECT COUNT(*) FROM (SELECT * FROM book_info WHERE (" +
             "ugk_name LIKE ? OR author LIKE ?) AND amount > 0 UNION SELECT * FROM book_info WHERE " +
             "ugk_uid IN (SELECT uid FROM cs_user WHERE name LIKE ?) AND amount > 0) AS temp";
-
-    private final static String UPDATE_BOOK_INFO_COUNT_BY_PKID = "UPDATE book_info SET amount=amount+1 WHERE pk_id = ?";
 
     @Autowired
     public BookInfoServiceImpl(JdbcOperations jdbcOperations) {
@@ -104,7 +102,7 @@ public class BookInfoServiceImpl implements BookInfoService {
         if (labelId >= 13) {
             return jdbcOperations.queryForObject(GET_BOOK_COUNT_BY_LABEL_TYPESCONTROLLER, Integer.class, labelId);
         } else {
-            return jdbcOperations.queryForObject(GET_BOOK_COUNT_BY_LABEL, Integer.class, labelId);
+            return jdbcOperations.queryForObject(GET_BOOK_COUNT_BY_LABELID, Integer.class, labelId);
         }
     }
 
@@ -115,20 +113,14 @@ public class BookInfoServiceImpl implements BookInfoService {
     }
 
     @Override
-    public List<BookInfoPO> getBookByLabelIdAndPage(PagePO pagePO, int labelid) {
-        if (labelid >= 13) {
+    public List<BookInfoPO> getBookByLabelIdAndPage(PagePO pagePO, int labelId) {
+        if (labelId >= 13) {
             return jdbcOperations.query(GET_BOOK_BY_LABEL_AND_PAGE_TYPESCONTROLLER,
-                    JdbcRowMapper.newInstance(BookInfoPO.class), labelid, pagePO.getBeginIndex(), pagePO.getEveryPage());
+                    JdbcRowMapper.newInstance(BookInfoPO.class), labelId, pagePO.getBeginIndex(), pagePO.getEveryPage());
         } else {
-            return jdbcOperations.query(GET_BOOK_BY_LABEL_AND_PAGE,
-                    JdbcRowMapper.newInstance(BookInfoPO.class), labelid, pagePO.getBeginIndex(), pagePO.getEveryPage());
+            return jdbcOperations.query(GET_BOOK_BY_LABELID_AND_PAGE,
+                    JdbcRowMapper.newInstance(BookInfoPO.class), labelId, pagePO.getBeginIndex(), pagePO.getEveryPage());
         }
-    }
-
-    @Override
-    public List<BookInfoPO> getBookInfoByNAOByPage(String keyWord, PagePO pagePO) {
-        return jdbcOperations.query(GET_BOOK_BY_NAO_BY_PAGE_UNLOGIN,
-                JdbcRowMapper.newInstance(BookInfoPO.class), keyWord, keyWord, keyWord, pagePO.getBeginIndex(), pagePO.getEveryPage());
     }
 
     @Override
@@ -137,15 +129,39 @@ public class BookInfoServiceImpl implements BookInfoService {
     }
 
     @Override
-    public List<Integer> getBookInfoUidByPage(PagePO pagePO) {
-        return jdbcOperations.queryForList(GET_ONE_PAGE_BOOKINFO_UID,
-                Integer.class, pagePO.getBeginIndex(), pagePO.getEveryPage());
+    public List<BookInfoPO> getBookInfoByNAOAndPage(String keyWord, PagePO pagePO) {
+        return jdbcOperations.query(GET_BOOK_BY_NAO_BY_PAGE,
+                JdbcRowMapper.newInstance(BookInfoPO.class), keyWord, keyWord, keyWord, pagePO.getBeginIndex(), pagePO.getEveryPage());
     }
 
     @Override
-    public List<BookInfoPO> getBookInfoByNAO(String keyWord) {
-        return jdbcOperations.query(GET_BOOK_BY_NAO,
-                JdbcRowMapper.newInstance(BookInfoPO.class), keyWord, keyWord);
+    public int getUploadBookCountByUid(int uid) {
+        return jdbcOperations.queryForObject(GET_BOOK_COUNT_BY_UID, int.class, uid);
+    }
+
+    @Override
+    public List<BookInfoPO> getUploadBookByUidAndPage(int uid, PagePO pagePO) {
+        return jdbcOperations.query(GET_UPLOAD_BOOK_BY_UID_AND_PAGE, JdbcRowMapper.newInstance(BookInfoPO.class), uid, pagePO.getBeginIndex(), pagePO.getEveryPage());
+    }
+
+    @Override
+    public List<BookInfoPO> getBorrowBookByUid(int uid, PagePO pagePO) {
+        return jdbcOperations.query(GET_BORROW_BOOK_BY_UID, JdbcRowMapper.newInstance(BookInfoPO.class), uid, pagePO.getBeginIndex(), pagePO.getEveryPage());
+    }
+
+    @Override
+    public void deleteBookByBookId(int pkId) {
+        jdbcOperations.update(DELETE_BOOK_BY_BOOKINFOPO, pkId);
+    }
+
+    @Override
+    public BookInfoPO getBookInfoByBookId(int id) {
+        return jdbcOperations.queryForObject(GET_BOOKINFO_BY_BOOKID, BookInfoPO.class, id);
+    }
+
+    @Override
+    public void updateBookCountByBookId(int bookId) {
+        jdbcOperations.update(UPDATE_BOOK_COUNT_BY_BOOKID, bookId);
     }
 
     @Override
@@ -170,35 +186,14 @@ public class BookInfoServiceImpl implements BookInfoService {
         }
     }
 
-    @Override
-    public BookInfoPO getBookInfoById(int id) {
-        return (BookInfoPO) jdbcOperations.queryForObject(GET_BOOKINFO_BY_ID, JdbcRowMapper.newInstance(BookInfoPO.class), id);
-    }
+
+
+
 
     @Override
-    public List<BookInfoPO> getBorrowBookByUid(int uid, PagePO pagePO) {
-        return jdbcOperations.query(GET_BORROW_BOOK_BY_UID, JdbcRowMapper.newInstance(BookInfoPO.class), uid, pagePO.getBeginIndex(), pagePO.getEveryPage());
-    }
-
-    @Override
-    public List<BookInfoPO> getUploadBookByUid(int uid, PagePO pagePO) {
-        return jdbcOperations.query(GET_UPLOAD_BOOK_BY_UID, JdbcRowMapper.newInstance(BookInfoPO.class), uid, pagePO.getBeginIndex(), pagePO.getEveryPage());
-    }
-
-    @Override
-    public int getBookCountByUid(int uid) {
-        return jdbcOperations.queryForObject(GET_BOOK_COUNT_BY_UID, int.class, uid);
-    }
-
-    @Override
-    public void deleteBook(int pkId) {
-        jdbcOperations.update(DELETE_BOOK_BY_BOOKINFOPO, pkId);
-    }
-
-    @Override
-    public BookInfoPO getBookByPkId(int bookInfoPkId) {
-        List<BookInfoPO> query = jdbcOperations.query(GET_BOOK_BY_PKID, JdbcRowMapper.newInstance(BookInfoPO.class), bookInfoPkId);
-        return query.get(0);
+    public List<Integer> getBookInfoUidByPage(PagePO pagePO) {
+        return jdbcOperations.queryForList(GET_ONE_PAGE_BOOKINFO_UID,
+                Integer.class, pagePO.getBeginIndex(), pagePO.getEveryPage());
     }
 
     @Override
@@ -214,10 +209,5 @@ public class BookInfoServiceImpl implements BookInfoService {
     @Override
     public void updateBook(BookInfoPO bookInfoPO) {
         jdbcOperations.update(UPDATE_BOOK_BY_ID, bookInfoPO.getUgkName(), bookInfoPO.getAuthor(), bookInfoPO.getAmount(), bookInfoPO.getPkId());
-    }
-
-    @Override
-    public void updateBookCountByPkId(int pkId) {
-        jdbcOperations.update(UPDATE_BOOK_INFO_COUNT_BY_PKID, pkId);
     }
 }

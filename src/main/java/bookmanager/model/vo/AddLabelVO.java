@@ -1,4 +1,4 @@
-package bookmanager.model.vo.label;
+package bookmanager.model.vo;
 
 /**
  * @Author: spider_hgyi

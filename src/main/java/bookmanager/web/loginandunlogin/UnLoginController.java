@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by dela on 12/26/17.
  *
- * @Description: 未登录前的主页面
+ * @Description: 未登录前的主页面对应的控制器
  */
 
 @Controller
@@ -63,7 +63,8 @@ public class UnLoginController {
         pagePO.setTotalCount(bookCount);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
 
-        List<BookLabelPO> bookLabelPOS = bookLabelService.getBookLabelById(0);
+        // 得到所有的一级标签信息
+        List<BookLabelPO> bookLabelPOS = bookLabelService.getBookLabelByParentId(0);
         if (labelId == -1) {
             bookInfoPOS = bookInfoService.getBookByPage(pagePO);
         } else {

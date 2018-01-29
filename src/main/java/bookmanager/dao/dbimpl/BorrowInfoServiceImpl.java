@@ -4,15 +4,12 @@ import bookmanager.dao.dbservice.BorrowInfoService;
 import bookmanager.dao.rowmapper.JdbcRowMapper;
 import bookmanager.model.po.BorrowInfoPO;
 import bookmanager.model.po.PagePO;
-import bookmanager.model.vo.borrowinfo.BorrowInfoVO;
+import bookmanager.model.vo.BorrowInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,11 +20,18 @@ import java.util.List;
 public class BorrowInfoServiceImpl implements BorrowInfoService {
     private JdbcOperations jdbcOperations;
 
-    private final static String SAVE = "INSERT INTO borrow_info(book_info_pk_id, cs_user_uid, borrow_date) VALUES(?, ?, ?)";
+    private final static String GET_BORROW_COUNT_BY_BOOK_ID = "SELECT COUNT(*) FROM borrow_info WHERE book_info_pk_id = ?";
 
     private final static String GET_BORROW_COUNT_BY_UID = "SELECT COUNT(*) FROM borrow_info WHERE cs_user_uid = ?";
 
-    private final static String GET_BORROW_COUNT_BY_PK_ID = "SELECT COUNT(*) FROM borrow_info WHERE book_info_pk_id = ?";
+    private static final String DELETE_BORROWINFO_BY_BOOKID_AND_UID = "DELETE FROM borrow_info WHERE book_info_pk_id = ? AND cs_user_uid = ?";
+
+
+
+
+
+
+    private final static String SAVE = "INSERT INTO borrow_info(book_info_pk_id, cs_user_uid, borrow_date) VALUES(?, ?, ?)";
 
     private final static String CHECK_BOOK_IS_BORROW = "SELECT pk_id FROM borrow_info WHERE book_info_pk_id = ? AND cs_user_uid = ?";
 
@@ -39,20 +43,14 @@ public class BorrowInfoServiceImpl implements BorrowInfoService {
     private static final String GET_BORROWINFO_OWNER_BY_PAGE = "SELECT name FROM cs_user, borrow_info, book_info AS b " +
             "WHERE book_info_pk_id=b.pk_id AND ugk_uid=uid LIMIT ?, ?";
 
-    private static final String DELETE_BORROWINFO_BY_PKID_AND_UID = "DELETE FROM borrow_info WHERE book_info_pk_id = ? AND cs_user_uid = ?";
-
     @Autowired
     public BorrowInfoServiceImpl(JdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
 
-    public void save(BorrowInfoPO borrowInfo) {
-        jdbcOperations.update(SAVE, borrowInfo.getBookInfoPkId(), borrowInfo.getCsUserId(), borrowInfo.getBorrowDate());
-    }
-
     @Override
-    public Integer getBorrowInfoCount() {
-        return null;
+    public int getBorrowCountByBookId(int bookInfoPkId) {
+        return jdbcOperations.queryForObject(GET_BORROW_COUNT_BY_BOOK_ID, Integer.class, bookInfoPkId);
     }
 
     @Override
@@ -61,9 +59,16 @@ public class BorrowInfoServiceImpl implements BorrowInfoService {
     }
 
     @Override
-    public int getBorrowCountByBookId(int bookInfoPkId) {
-        return jdbcOperations.queryForObject(GET_BORROW_COUNT_BY_PK_ID, Integer.class, bookInfoPkId);
+    public void deleteBorrowInfoByBookIdAndUid(int bookId, int uid) {
+        jdbcOperations.update(DELETE_BORROWINFO_BY_BOOKID_AND_UID, bookId, uid);
+    }
 
+
+
+
+
+    public void save(BorrowInfoPO borrowInfo) {
+        jdbcOperations.update(SAVE, borrowInfo.getBookInfoPkId(), borrowInfo.getCsUserId(), borrowInfo.getBorrowDate());
     }
 
     @Override
@@ -85,10 +90,5 @@ public class BorrowInfoServiceImpl implements BorrowInfoService {
         } catch (EmptyResultDataAccessException e) {
             return 0;
         }
-    }
-
-    @Override
-    public void deleteBorrowInfo(int pkId, int uid) {
-        jdbcOperations.update(DELETE_BORROWINFO_BY_PKID_AND_UID, pkId, uid);
     }
 }
