@@ -50,7 +50,7 @@
                     <p>书名：<span>《${bookInfo.key.ugkName}》</span></p>
                     <p>作者：<span>${bookInfo.key.author}</span></p>
                     <p>归属者：<span>${bookInfo.value}</span></p>
-                    <p>被借：<span>${borrowCount}</span>次</p>
+                    <p>目前借阅：<span>${borrowCount}</span>本</p>
                     <p>书籍总数：<span>${borrowCount + bookInfo.key.amount}</span>本</p>
                     <p>上传时间：<span>${bookInfo.key.uploadDate}</span></p>
                     <p>描述：<span>${bookInfo.key.describ}</span></p>
