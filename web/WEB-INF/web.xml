@@ -8,15 +8,20 @@
         <param-value>/WEB-INF/applicationContext.xml</param-value>
     </context-param>
 
-    <!--<error-page>-->
-        <!--<error-code>404</error-code>-->
-        <!--<location>/WEB-INF/views/404.html</location>-->
-    <!--</error-page>-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/404.html</location>
+    </error-page>
 
-    <!--<error-page>-->
-        <!--<error-code>500</error-code>-->
-        <!--<location>/WEB-INF/view/500.html</location>-->
-    <!--</error-page>-->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/views/500.html</location>
+    </error-page>
+
+    <!--<context-param>-->
+        <!--<param-name>log4jConfigLocation</param-name>-->
+        <!--<param-value>classpath:log4j.properties</param-value>-->
+    <!--</context-param>-->
 
     <filter>
         <filter-name>loginFilter</filter-name>
@@ -27,19 +32,4 @@
         <filter-name>loginFilter</filter-name>
         <url-pattern>/auth/*</url-pattern>
     </filter-mapping>
-
-    <!--<listener>-->
-        <!--<listener-class>org.springframewbookmanabookmanager.web.bookmanager.web.web.context.ContextLoaderListener</listener-class>-->
-    <!--</listener>-->
-
-    <!--<servlet>-->
-        <!--<servlet-name>dispatcher</servlet-name>-->
-        <!--<servlet-class>org.springframewbookmanabookmanager.web.bookmanager.web.web.servlet.DispatcherServlet</servlet-class>-->
-        <!--<load-on-startup>1</load-on-startup>-->
-    <!--</servlet>-->
-
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>dispatcher</servlet-name>-->
-        <!--<url-pattern>*.form</url-pattern>-->
-    <!--</servlet-mapping>-->
 </web-app>

@@ -7,6 +7,8 @@ import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.BookLabelPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.utilclass.BookUserMapUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,8 @@ import java.util.Map;
 
 @Controller
 public class UnLoginController {
+    private static final Logger logger = LoggerFactory.getLogger(UnLoginController.class);
+
     private UserService userService;
     private BookInfoService bookInfoService;
     private BookLabelService bookLabelService;
@@ -38,7 +42,7 @@ public class UnLoginController {
         this.bookLabelService = bookLabelService;
     }
 
-    @RequestMapping(value = {"/", "/page/{currentPagePre}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/",  "/page/{currentPagePre}"}, method = RequestMethod.GET)
     public String index(Model model, @PathVariable(value = "currentPagePre", required = false) String currentPagePre,
                         @RequestParam(value = "tag", required = false) String labelIdPre) {
         int bookCount;

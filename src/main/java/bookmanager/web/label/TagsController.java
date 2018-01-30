@@ -2,6 +2,8 @@ package bookmanager.web.label;
 
 import bookmanager.dao.dbservice.BookLabelService;
 import bookmanager.model.po.BookLabelPO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/auth")
 public class TagsController {
+    private static final Logger logger = LoggerFactory.getLogger(TagsController.class);
+
     private BookLabelService bookLabelRepository;
 
     @Autowired
@@ -31,7 +35,7 @@ public class TagsController {
 
     @RequestMapping(value = "/tags", method = RequestMethod.GET)
     public String showLabel(Model model) {
-        List<BookLabelPO> parentLabels = bookLabelRepository.getParentLabelsByParentId(0);
+        List<BookLabelPO> parentLabels = bookLabelRepository.getBookLabelByParentId(0);
         List<BookLabelPO> childrenLabels = bookLabelRepository.getChildrenLabelsByParentId(0);
         Map<String, Map<Integer, String>> labelsName = new HashMap<String, Map<Integer, String>>();
 

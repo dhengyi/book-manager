@@ -10,6 +10,8 @@ import bookmanager.model.po.BorrowInfoPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.utilclass.BookUserMapUtil;
 import bookmanager.utilclass.DateToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/auth/showbook")
 public class ShowBookController {
+    private static final Logger logger = LoggerFactory.getLogger(ShowBookController.class);
+
     private UserService userService;
     private BookInfoService bookInfoService;
     private BorrowInfoService borrowInfoService;
@@ -106,6 +110,7 @@ public class ShowBookController {
         } else {
             BorrowInfoPO borrowInfoPO = new BorrowInfoPO(bookId, uid, DateToString.getStringDate());
             borrowInfoService.save(borrowInfoPO);
+            bookInfoService.decBookCountByBookId(bookId);
 
             PrintWriter out = response.getWriter();
             String builder = "<script language=\"javascript\">" +

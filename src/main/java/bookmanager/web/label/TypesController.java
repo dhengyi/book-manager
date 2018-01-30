@@ -6,6 +6,8 @@ import bookmanager.dao.dbservice.UserService;
 import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.utilclass.BookUserMapUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/auth")
 public class TypesController {
+    private static final Logger logger = LoggerFactory.getLogger(TypesController.class);
+
     private BookInfoService bookInfoService;
     private UserService userService;
     private BookLabelService bookLabelService;
@@ -54,6 +58,7 @@ public class TypesController {
         String labelName = bookLabelService.getNameByPkId(labelId);
         bookInfoPOS = bookInfoService.getBookByLabelIdAndPage(pagePO, labelId);
         int bookCount = bookInfoService.getBookCountByLabelId(labelId);
+        pagePO.setTotalCount(bookCount);
         pagePO.setTotalPage((bookCount % 5 == 0) ? bookCount / 5 : bookCount / 5 + 1);
 
         // 得到相应书籍的拥有者姓名

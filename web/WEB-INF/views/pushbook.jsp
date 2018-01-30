@@ -78,7 +78,7 @@
             </div>
             <div class="col-xs-12 col-md-6">
                 <input type="text" name="types" id="select_input" required readonly>
-                <button id="reset" class="btn">清空</button>
+                <button type="reset" class="btn">清空</button>
                 <select id="select" name="one" onchange="changeoption(this.selectedIndex)">
                     <option>请选择</option>
                     <option value="编程语言">编程语言</option>
@@ -109,7 +109,7 @@
             <div style="clear:both"></div>
         </div>
         <p>
-            <button class="btn btn-success">提交</button>
+            <button type="submit" class="btn btn-success">提交</button>
         </p>
     </form>
 </div>
@@ -145,7 +145,7 @@
         <div style="clear: both;height:0;"></div>
     </div>
     <div id="foot">
-        <p>Copyright @ 2006-2018 西邮Linux兴趣小组 </p>
+        <p>Copyright &#169; 2006-2018 西邮Linux兴趣小组 </p>
         <p>All Rights Reserved</p>
     </div>
 </footer>
@@ -154,13 +154,6 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/canvas1.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/pushbooks.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#reset").click(function () {
-            $("#select_input").val("");
-        })
-    });
-</script>
 </body>
 
 </html>

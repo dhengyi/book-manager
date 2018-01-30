@@ -8,6 +8,8 @@ import bookmanager.model.po.BookRelationLabelPO;
 import bookmanager.utilclass.COSStorage;
 import bookmanager.utilclass.DateToString;
 import bookmanager.utilclass.Tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,6 +36,8 @@ import java.util.*;
 @WebServlet(urlPatterns = "/auth/upload.do")
 @MultipartConfig
 public class NewBookController extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(NewBookController.class);
+
     private BookInfoService bookInfoService;
     private BookLabelService bookLabelService;
     private BookRelationLabelService bookRelationLabelService;

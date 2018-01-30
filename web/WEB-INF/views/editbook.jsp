@@ -97,7 +97,7 @@
         <div style="clear: both;height:0;"></div>
     </div>
     <div id="foot">
-        <p>Copyright @ 2006-2018 西邮Linux兴趣小组 </p>
+        <p>Copyright &#169; 2006-2018 西邮Linux兴趣小组 </p>
         <p>All Rights Reserved</p>
     </div>
 </footer>

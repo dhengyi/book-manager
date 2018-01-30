@@ -34,7 +34,7 @@
             <a href="${pageContext.request.contextPath}/auth/mybook/"><i class="fa fa-file-text fa-fw"></i>我的书籍</a>
             <a href="${pageContext.request.contextPath}/auth/upload"><i class="fa fa-tags fa-fw"></i>上传书籍</a>
         </form>
-        <a id="index1_sign" href="index.jsp">退出登录</a>
+        <a id="index1_sign" href="${pageContext.request.contextPath}/logout.do">退出登录</a>
     </div>
 </header>
 <div id="main">
@@ -60,7 +60,7 @@
                         <img src="${uploadBook.bookPicture}">
                     </div>
                     <div class="book_info col-xs-12 col-md-8">
-                        <p>《${uploadBook.ugkName}》-----${uploadBook.author}</p>
+                        <p><a style="text-decoration:none" href="/auth/showbook/${uploadBook.pkId}">《${uploadBook.ugkName}》-----${uploadBook.author}</a></p>
                         <p>${uploadBook.describ}</p>
                         <p><span><i class="fa fa-book"></i>被借${uploadBorrowCount.get(uploadBook)}次</span>
                             <span><i class="fa fa-clock-o"></i>${uploadBook.uploadDate}</span>
@@ -68,7 +68,8 @@
                     </div>
                     <div class="col-xs-12 col-md-2">
                         <button class="btn" onclick="deleteBookByPkId(${uploadBook.pkId});">下架图书</button>
-                        <%--<button class="btn modify" onclick="editBook();">修改信息</button>--%>
+                        <%--TODO AJAX进行实现--%>
+                        <%--<button class="btn modify" onclick="editBook(${uploadBook}, ${pageContext.session});">修改信息</button>--%>
                     </div>
                     <div style="clear:both"></div>
                 </div>
@@ -84,7 +85,7 @@
                         <img src="${borrowBook.key.bookPicture}">
                     </div>
                     <div class="book_info col-xs-12 col-md-8">
-                        <p>《${borrowBook.key.ugkName}》-----${borrowBook.key.author}</p>
+                        <p><a style="text-decoration:none" href="/auth/showbook/${borrowBook.key.pkId}">《${borrowBook.key.ugkName}》-----${borrowBook.key.author}</a></p>
                         <p>${borrowBook.key.describ}</p>
                         <p><span><i class="fa fa-user"></i>${borrowBook.value}</span>
                             <span><i class="fa fa-book"></i>被借${borrowBookCount.get(borrowBook.key)}次</span>
@@ -229,7 +230,7 @@
         <div style="clear: both;height:0;"></div>
     </div>
     <div id="foot">
-        <p>Copyright @ 2006-2018 西邮Linux兴趣小组 </p>
+        <p>Copyright &#169; 2006-2018 西邮Linux兴趣小组 </p>
         <p>All Rights Reserved</p>
     </div>
 </footer>
@@ -242,6 +243,10 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/mybooks.js"></script>
 
 <script type="text/javascript">
+    $.ajaxSetup({
+        async: false
+    });
+
     function deleteBookByPkId(pk_id) {
         $.post("/auth/mybook/delete", {"pkId": pk_id}, function () {
             alert("您已成功下架了此图书！");
@@ -249,9 +254,11 @@
         });
     }
 
-    function editBook() {
-        window.location = "${pageContext.request.contextPath}/auth/mybook/update";
-    }
+    <%--function editBook(bookInfo, session) {--%>
+        <%--$.post("/auth/mybook/update.do", {"bookInfo": bookInfo, "session":session}, function () {--%>
+            <%--window.location = "${pageContext.request.contextPath}/auth/mybook/edit";--%>
+        <%--});--%>
+    <%--}--%>
 
     function returnBookByUidAndPkId(uid, pkId) {
         $.post("/auth/mybook/return", {"csUserId": uid, "bookInfoPkId": pkId}, function () {
@@ -259,7 +266,6 @@
             window.location = "${pageContext.request.contextPath}/auth/mybook/borrow";
         });
     }
-
     //    function editBook(pkId) {
     //        $.ajax({
     //            type: "post",

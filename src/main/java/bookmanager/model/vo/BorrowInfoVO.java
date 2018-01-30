@@ -50,6 +50,10 @@ public class BorrowInfoVO implements Comparable<BorrowInfoVO>{
         this.pk_id = pk_id;
     }
 
+    public int compareTo(BorrowInfoVO o) {
+        return this.getPk_id() < o.getPk_id() ? 1 : -1;
+    }
+
     @Override
     public String toString() {
         return "BorrowInfoVO{" +
@@ -58,9 +62,5 @@ public class BorrowInfoVO implements Comparable<BorrowInfoVO>{
                 ", ugk_name='" + ugk_name + '\'' +
                 ", pk_id=" + pk_id +
                 '}';
-    }
-
-    public int compareTo(BorrowInfoVO o) {
-        return this.getPk_id() < o.getPk_id() ? 1 : -1;
     }
 }

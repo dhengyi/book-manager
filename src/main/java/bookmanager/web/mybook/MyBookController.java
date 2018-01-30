@@ -5,6 +5,8 @@ import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.model.po.ReturnInfoPO;
 import bookmanager.utilclass.BookUserMapUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -30,6 +30,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/auth/mybook")
 public class MyBookController {
+    private static final Logger logger = LoggerFactory.getLogger(MyBookController.class);
+
     private UserService userService;
     private BookInfoService bookInfoService;
     private ReturnInfoService returnInfoService;
@@ -146,12 +148,28 @@ public class MyBookController {
         return "mybooks";
     }
 
-//    // 展现更新图书信息的页面
-//    @RequestMapping(value = "/update", method = RequestMethod.POST)
-//    public String updateBook() throws ServletException, IOException {
-//        return null;
+//    // 为展现图书信息的页面进行表单回填做准备
+//    @RequestMapping(value = "/update.do", method = RequestMethod.POST)
+//    public String updateBook(BookInfoPO bookInfo, HttpSession session) throws ServletException, IOException {
+//        System.out.println(bookInfo);
+//        System.out.println(session.toString());
+//        session.setAttribute("bookInfo", bookInfo);
+//
+//        return "mybooks";
 //    }
 //
+//    // 修改书籍的页面
+//    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+//    public String showEditPage(HttpSession session) {
+//        BookInfoPO bookInfoPO = (BookInfoPO) session.getAttribute("bookInfo");
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        modelAndView.addObject("bookInfo", bookInfoPO);
+//        session.removeAttribute("bookInfo");
+//
+//        return "editbook";
+//    }
+
 //    // 更新书籍后进行的后台处理
 //    @RequestMapping(value = "/edit.do", method = RequestMethod.POST)
 //    public void editBookInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {

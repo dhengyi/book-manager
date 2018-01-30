@@ -9,9 +9,6 @@ import java.util.List;
  * Created by dela on 11/23/17.
  */
 public interface BookInfoService {
-    // 得到某一级分类下的所有书
-//    List<BookInfoPO> getBookInfoByBookLabelParentId(int bookParentId);
-
     // 得到所有书籍总记录数
     Integer getBookCount();
 
@@ -45,24 +42,15 @@ public interface BookInfoService {
     // 根据bookId查询一本书
     BookInfoPO getBookInfoByBookId(int bookId);
 
-    // 通过bookId更新图书的数量
-    void updateBookCountByBookId(int bookId);
-
     // 向书籍信息表中插入一条数据
     boolean save(BookInfoPO bookInfo);
+
+    // 通过bookId更新图书的数量
+    void updateBookCountByBookId(int bookId);
 
     // 通过书籍名与uid查询书籍的id
     int getBookIDByBookNameAndUID(String bookName, int uid);
 
-
-
-
-    // 得到一页的图书信息的uid
-    List<Integer> getBookInfoUidByPage(PagePO pagePO);
-
-    String getParentBookLabel(int pk_id);
-
-    String getChildBookLabel(int pk_id);
-
-    void updateBook(BookInfoPO bookInfoPO);
+    // 通过bookId减少书籍的数量
+    void decBookCountByBookId(int bookId);
 }

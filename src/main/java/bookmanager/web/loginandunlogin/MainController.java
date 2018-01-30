@@ -7,6 +7,8 @@ import bookmanager.model.po.BookInfoPO;
 import bookmanager.model.po.BookLabelPO;
 import bookmanager.model.po.PagePO;
 import bookmanager.utilclass.BookUserMapUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/auth")
 public class MainController {
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+
     private UserService userService;
     private BookInfoService bookInfoService;
     private BookLabelService bookLabelService;

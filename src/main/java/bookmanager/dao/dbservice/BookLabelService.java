@@ -14,15 +14,9 @@ public interface BookLabelService {
     // 通过标签名得到标签的id
     int getPkIdByName(String name);
 
-
-
-
-    
-    List<BookLabelPO> getParentLabelsByParentId(int parentId);
-
+    // 根据父标签id得到所有的子标签信息
     List<BookLabelPO> getChildrenLabelsByParentId(int parentId);
 
-    void insertNewLabel(BookLabelPO label);
-
+    // 根据标签id得到标签名
     String getNameByPkId(int labelId);
 }

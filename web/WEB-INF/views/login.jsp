@@ -78,7 +78,7 @@
                 </p>
             </div>
             <div class="col-xs-12 col-md-2">
-                <button class="btn"><a href="${pageContext.request.contextPath}/auth/showbook/${book.key.pkId}">点我借阅</a>
+                <button class="btn"><a href="${pageContext.request.contextPath}/auth/showbook/${book.key.pkId}">查看详情</a>
                 </button>
             </div>
             <div style="clear:both"></div>
@@ -255,7 +255,7 @@
         <div style="clear: both;height:0;"></div>
     </div>
     <div id="foot">
-        <p>Copyright @ 2006-2018 西邮Linux兴趣小组 </p>
+        <p>Copyright &#169; 2006-2018 西邮Linux兴趣小组 </p>
         <p>All Rights Reserved</p>
     </div>
 </footer>
