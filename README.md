@@ -1,7 +1,5 @@
 # XiyouLinux Group 图书借阅平台
 
-标签（空格分隔）： GitHub
-
 本系统是一个改善图书管理手段的Web项目。前端使用`Bootstrap`、`jQuery`框架增强用户与系统之间的交互，后端使用`Spring`与`Spring MVC`降低代码之间耦合度并提升开发效率。
 
 本系统实现了以下基本功能模块，并在不断改善之中：
