@@ -94,5 +94,5 @@ spider_hgyi@outlook.com
   [2]: https://1drv.ms/u/s!Alo1-VlEZGPPdu7oO4YMYTapC3g
   [3]: http://i4.bvimg.com/633787/52421f9a695286db.png
   [4]: http://i2.bvimg.com/633787/efe6964f5e49eacd.png
-  [5]: http://i4.bvimg.com/633787/a9ee547d0552954f.png
+  [5]: https://github.com/championheng/book-manager/blob/master/picture/1.png
   [6]: https://img.shields.io/badge/version-1.0-blue.svg
