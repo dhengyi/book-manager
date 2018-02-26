@@ -60,9 +60,20 @@ WEB-INF ----views <-前端页面
 ```
 
 ## 使用说明
-MySQL环境下载（不含测试数据）：[![download][3]][1]
+MySQL环境下载（不含测试数据）：[![download][1]][2]
 
 源代码直接clone到本地，不提供压缩包了。
+
+部分页面效果：
+
+1. 登录后主页面：
+![此处输入图片的描述][3]
+
+2. 标签页：
+![此处输入图片的描述][4]
+
+3. 书籍详情页：
+![此处输入图片的描述][5]
 
 ## TODO
  1. 优化Ajax与后台交互之间的代码逻辑
@@ -71,7 +82,7 @@ MySQL环境下载（不含测试数据）：[![download][3]][1]
  4. 加入Redis缓存，提高系统响应速度
 
 ## 版本说明
-![version 1.0][2]
+![version 1.0][6]
 
 ## Email
 ```
@@ -79,6 +90,9 @@ spider_hgyi@outlook.com
 ```
 
 
-  [1]: https://1drv.ms/u/s!Alo1-VlEZGPPdu7oO4YMYTapC3g
-  [2]: https://img.shields.io/badge/version-1.0-blue.svg
-  [3]: https://img.shields.io/badge/download-MySQL-brightgreen.svg
+  [1]: https://img.shields.io/badge/download-MySQL-brightgreen.svg
+  [2]: https://1drv.ms/u/s!Alo1-VlEZGPPdu7oO4YMYTapC3g
+  [3]: http://i4.bvimg.com/633787/52421f9a695286db.png
+  [4]: http://i2.bvimg.com/633787/efe6964f5e49eacd.png
+  [5]: http://i4.bvimg.com/633787/a9ee547d0552954f.png
+  [6]: https://img.shields.io/badge/version-1.0-blue.svg
