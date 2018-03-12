@@ -59,6 +59,8 @@ web ----filter <-身份验证之过滤器
 WEB-INF ----views <-前端页面
 ```
 
+**关于项目上更多的技术细节，请参考本人所写的博客：[Java Web--XiyouLinux Group图书借阅平台的实现](http://blog.csdn.net/championhengyi/article/details/79535125)**，不在这里赘述。
+
 ## 使用说明
 MySQL环境下载（不含测试数据）：[![download][1]][2]
 
